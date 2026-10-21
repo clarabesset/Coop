@@ -3,7 +3,7 @@
 const CACHE = 'coop-scan-v10';
 const SHELL = [
   './', './index.html', './cartes.html', './styles.css', './data.js', './app.js',
-  './auth.js', './config.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
+  './auth.js', './config.js', './install.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
   'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
 ];
 

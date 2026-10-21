@@ -104,3 +104,11 @@ label.secondary { display: block; text-align: center; padding: 12px; margin-top:
 .stats dd { margin: 4px 0 0; font-size: 1.15rem; font-weight: 700; }
 .stats dd .muted { font-size: .85rem; font-weight: 400; }
 .contrib { margin-top: 12px; }
+
+/* Bannière d'installation */
+.install { display: flex; align-items: flex-start; gap: 8px; margin: 8px 0 12px; padding: 12px 12px 12px 14px;
+  background: var(--card); border: 1px solid var(--accent); border-radius: 12px; font-size: .95rem; line-height: 1.4; }
+.install-body { flex: 1; }
+.install-close { background: none; color: var(--muted); padding: 0 4px; font-size: 1.1rem; line-height: 1; }
+.ios-share { display: inline-block; padding: 0 6px; border: 1px solid var(--muted); border-radius: 6px; font-size: 1rem; }
+.install-btn { display: block; margin-top: 8px; padding: 10px 14px; }
