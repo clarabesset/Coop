@@ -173,7 +173,7 @@ Première brique, sans Apps Script : une page web statique dans [`docs/`](docs/)
 - **Identifiant d'une carte** : le pseudo Open Collective du contributeur, colonne « Opposite Account Handle » (ex. `max73`). C'est ce que le QR code encode, sous la forme `https://coopdemenil.github.io/scan/?id=max73`.
 - **Ce qu'affiche l'app après un scan** : le nom du contributeur, son palier (texte entre parenthèses de la description, ex. « Cotisation mensuelle »), « À jour ce mois-ci » ou « Pas de contribution ce mois-ci », la date et le montant de la dernière contribution, et le montant net des 6 derniers mois.
 - **Route `?id=<pseudo>`** : affiche directement la fiche, pour un QR scanné avec l'app caméra native du téléphone.
-- **Cartes de test** : https://coopdemenil.github.io/scan/cartes.html génère un QR par contributeur pour tester le scan depuis un écran.
+- **Cartes de test** : https://coopdemenil.github.io/scan/cartes génère un QR par contributeur pour tester le scan depuis un écran.
 
 ## Règles de calcul
 
