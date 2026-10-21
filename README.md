@@ -201,7 +201,7 @@ L'app demande un mot de passe à l'ouverture. Il ne sert pas seulement à masque
 - Changer le mot de passe, ou pointer vers un autre Sheet :
 
   ```
-  node scripts/make-config.mjs "nouveau mot de passe" [sheetId] [nomOnglet]
+  node scripts/make-config.mjs 'nouveau mot de passe' <sheetId ou URL du Sheet> [nomOnglet]
   ```
 
   puis incrémenter la version du cache dans [`docs/sw.js`](docs/sw.js), committer et fusionner. Les appareils déjà connectés devront ressaisir le mot de passe.

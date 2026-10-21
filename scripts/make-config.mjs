@@ -1,15 +1,19 @@
 #!/usr/bin/env node
 // Génère docs/config.js : l'identifiant du Sheet chiffré avec un mot de passe.
-// Usage : node scripts/make-config.mjs "<mot de passe>" [sheetId] [nomOnglet]
+// Usage : node scripts/make-config.mjs '<mot de passe>' <sheetId> [nomOnglet]
+// Le Sheet est obligatoire : aucun identifiant n'est écrit en clair dans le dépôt.
 // Le mot de passe n'est stocké nulle part : seul le résultat chiffré est écrit.
 import { webcrypto as crypto } from 'node:crypto';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-const [password, sheetId = '1Bn6md9VQvYQc7cduu1_YDNqoTmEtrKNh2QmfbsPouzE', transactionsSheet = 'Transactions'] = process.argv.slice(2);
-if (!password || password.length < 8) {
-  console.error('Usage : node scripts/make-config.mjs "<mot de passe, 8 caractères minimum>" [sheetId] [nomOnglet]');
+const [password, sheetArg, transactionsSheet = 'Transactions'] = process.argv.slice(2);
+// Accepte l'identifiant seul ou l'URL complète du Sheet.
+const sheetId = (String(sheetArg || '').match(/\/d\/([a-zA-Z0-9_-]{20,})/) || [, sheetArg])[1];
+if (!password || password.length < 8 || !/^[a-zA-Z0-9_-]{20,}$/.test(sheetId || '')) {
+  console.error("Usage : node scripts/make-config.mjs '<mot de passe, 8 caractères minimum>' <sheetId ou URL du Sheet> [nomOnglet]");
+  console.error("Mettre le mot de passe entre guillemets simples pour que le shell n'interprète pas $ ou !.");
   process.exit(1);
 }
 
