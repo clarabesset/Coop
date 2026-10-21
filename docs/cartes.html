@@ -11,10 +11,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Coop Scan">
   <script>
-    // Ouverte depuis une icône d'écran d'accueil : l'app doit démarrer sur le scanner.
-    if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true) {
-      location.replace('./');
-    }
+    // Lancée depuis une icône d'écran d'accueil installée sur cette page : démarrer sur le scanner.
+    // Le scanner pose un marqueur de session ; s'il est présent, on navigue dans l'app
+    // (lien « Cartes membres ») et la page doit s'afficher normalement.
+    (function () {
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+      let inApp = false;
+      try { inApp = sessionStorage.getItem('coop.inapp') === '1'; } catch (e) { inApp = true; }
+      if (standalone && !inApp) location.replace('./');
+    })();
   </script>
   <link rel="stylesheet" href="./styles.css">
 </head>
@@ -48,7 +53,7 @@
         const members = membersFrom(tx.transactions);
         src.textContent = tx.ok ? `${members.length} contributeurs depuis l'onglet Transactions` : 'Onglet Transactions injoignable : ' + tx.error;
         src.className = 'source ' + (tx.ok ? 'sheet' : 'demo');
-        const base = location.origin + location.pathname.replace(/cartes\.html$/, '');
+        const base = location.origin + location.pathname.replace(/cartes(\.html)?$/, '');
         document.getElementById('cards').innerHTML = members.map(m => {
           const url = `${base}?id=${encodeURIComponent(m.id)}`;
           const qr = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(url)}`;

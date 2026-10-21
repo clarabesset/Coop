@@ -12,6 +12,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Coop Scan">
+  <script>
+    // Marqueur de session : la page des cartes sait qu'on navigue dans l'app.
+    try { sessionStorage.setItem('coop.inapp', '1'); } catch (e) {}
+  </script>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -53,7 +57,7 @@
   </main>
 
   <footer>
-    <a href="./cartes.html">Cartes membres</a> ·
+    <a href="./cartes">Cartes membres</a> ·
     <a id="sheet-link" href="#" target="_blank" rel="noopener">Ouvrir le Sheet</a> ·
     <a id="logout" href="#" hidden>Se déconnecter</a>
   </footer>
