@@ -127,7 +127,7 @@ function summarizeContributions(transactions, handle, months = 6, now = new Date
   const first = credits[credits.length - 1] || null;
   return {
     handle,
-    count: credits.length,                                   // nombre de contributions encaissées
+    count: Math.max(0, credits.length - mine.filter(t => !t.credit).length), // contributions encaissées, remboursements déduits
     totalAmount: mine.reduce((sum, t) => sum + t.amount, 0), // net : remboursements déduits
     upToDate: (byMonth[monthKey(now)] || 0) > 0,
     recent,
