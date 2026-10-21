@@ -1,7 +1,7 @@
 // Chargement des membres depuis le Google Sheet, avec repli sur des données de démo.
 // Le Sheet doit être partagé en « Tous les utilisateurs disposant du lien : lecteur ».
 
-const SHEET_ID = '1U9XAJZzTZHdLWJXMzkiVB9A3gUnMywjgkTgNkE6l5L8';
+const SHEET_ID = '1Bn6md9VQvYQc7cduu1_YDNqoTmEtrKNh2QmfbsPouzE';
 const SHEET_GID = '0';
 const SHEET_CSV_URL =
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&gid=${SHEET_GID}`;
@@ -39,7 +39,20 @@ function parseCsv(text) {
   return rows;
 }
 
+// Si le CSV a été collé tel quel dans le Sheet, chaque ligne tient dans une seule
+// cellule contenant des virgules : on redécoupe cette cellule.
+function unfoldCollapsedRows(rows) {
+  const nonEmpty = (r) => r.filter(v => v.trim() !== '');
+  const collapsed = rows.length && nonEmpty(rows[0]).length === 1 && nonEmpty(rows[0])[0].includes(',');
+  if (!collapsed) return rows;
+  return rows.map(r => {
+    const cells = nonEmpty(r);
+    return cells.length === 1 ? parseCsv(cells[0])[0] || [] : r;
+  });
+}
+
 function rowsToMembers(rows) {
+  rows = unfoldCollapsedRows(rows);
   if (!rows.length) return [];
   const headers = rows[0].map(h => h.trim().toLowerCase());
   return rows.slice(1)
