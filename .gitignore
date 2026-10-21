@@ -1,0 +1,22 @@
+# macOS / iCloud
+.DS_Store
+.icloud
+*.icloud
+
+# clasp (Apps Script CLI) : identifiants et id de script
+.clasprc.json
+.clasp.json
+
+# Secrets
+.env
+*.local
+
+# Exports de données (contiennent des emails / téléphones)
+*.csv
+*.xlsx
+
+# Éditeurs
+.vscode/
+.idea/
+
+node_modules/
