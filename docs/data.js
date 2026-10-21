@@ -3,10 +3,16 @@
 // Le Sheet doit être partagé en « Tous les utilisateurs disposant du lien : lecteur ».
 // L'identifiant d'une carte est le pseudo Open Collective (colonne « Opposite Account Handle »).
 
-const SHEET_ID = '1Bn6md9VQvYQc7cduu1_YDNqoTmEtrKNh2QmfbsPouzE';
-const TRANSACTIONS_SHEET = 'Transactions';
-const TRANSACTIONS_CSV_URL =
+// Renseigné par configure() après déverrouillage : rien en clair dans le code.
+let SHEET_ID = null;
+let TRANSACTIONS_SHEET = 'Transactions';
+function configure({ sheetId, transactionsSheet }) {
+  SHEET_ID = sheetId;
+  if (transactionsSheet) TRANSACTIONS_SHEET = transactionsSheet;
+}
+const transactionsCsvUrl = () =>
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(TRANSACTIONS_SHEET)}`;
+const sheetUrl = () => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`;
 
 function parseCsv(text) {
   const rows = [];
@@ -73,7 +79,8 @@ function rowsToTransactions(rows) {
 
 async function loadTransactions() {
   try {
-    const res = await fetch(TRANSACTIONS_CSV_URL, { cache: 'no-store' });
+    if (!SHEET_ID) throw new Error('App non déverrouillée');
+    const res = await fetch(transactionsCsvUrl(), { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const transactions = rowsToTransactions(parseCsv(await res.text()));
     if (!transactions.length) throw new Error('Onglet Transactions vide ou colonnes absentes');
@@ -135,5 +142,5 @@ function extractId(raw) {
   return /^[a-z0-9][a-z0-9._-]{0,80}$/.test(id) ? id : null;
 }
 
-window.CoopData = { loadTransactions, membersFrom, summarizeContributions, extractId, SHEET_ID, TRANSACTIONS_SHEET };
+window.CoopData = { configure, sheetUrl, loadTransactions, membersFrom, summarizeContributions, extractId };
 })();

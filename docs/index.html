@@ -17,11 +17,15 @@
 <body>
   <header>
     <h1>Coop Scan</h1>
-    <p id="source" class="source">Chargement…</p>
+    <p id="source" class="source">Ouverture…</p>
   </header>
 
   <main>
-    <section class="screen" data-screen="scan">
+    <section class="screen" data-screen="login" hidden>
+      <div id="login"></div>
+    </section>
+
+    <section class="screen" data-screen="scan" hidden>
       <div class="viewfinder">
         <video id="video" muted playsinline></video>
         <div class="frame"></div>
@@ -45,10 +49,13 @@
 
   <footer>
     <a href="./cartes.html">Cartes QR de test</a> ·
-    <a id="sheet-link" href="#" target="_blank" rel="noopener">Ouvrir le Sheet</a>
+    <a id="sheet-link" href="#" target="_blank" rel="noopener">Ouvrir le Sheet</a> ·
+    <a id="logout" href="#" hidden>Se déconnecter</a>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script src="./config.js"></script>
+  <script src="./auth.js"></script>
   <script src="./data.js"></script>
   <script src="./app.js"></script>
 </body>

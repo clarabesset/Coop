@@ -188,11 +188,26 @@ L'app lit l'onglet via l'export CSV public, sans clé ni serveur. Il faut donc :
 
 1. Ouvrir le Sheet → **Partager** → « Accès général » → **Tous les utilisateurs disposant du lien** → rôle **Lecteur**.
 2. Un onglet nommé exactement `Transactions`, avec au minimum les colonnes `Effective Date & Time`, `Amount Single Column`, `Opposite Account Handle`, `Opposite Account Name`, `Credit/Debit`, `Kind`, `Description`. L'export CSV d'Open Collective importé tel quel convient.
-3. L'identifiant du Sheet et le nom de l'onglet sont dans [`docs/data.js`](docs/data.js).
+3. L'identifiant du Sheet et le nom de l'onglet ne sont pas dans le code : ils sont chiffrés dans [`docs/config.js`](docs/config.js), voir ci-dessous.
 
 Pour mettre à jour les données : réexporter les transactions depuis Open Collective et réimporter le CSV dans l'onglet (Fichier → Importer → Remplacer la feuille active). La synchro automatique par Apps Script décrite plus haut remplacera cette étape manuelle.
 
 Point RGPD : avec le mode « lien public », toute personne connaissant l'URL du Sheet peut lire la liste des contributeurs et leurs montants. Les noms sont les pseudos publics Open Collective, il n'y a ni email ni téléphone. La version Apps Script décrite plus haut remplace ce partage public par un script qui lit la feuille à la place de l'utilisateur.
+
+## Mot de passe d'accès
+
+L'app demande un mot de passe à l'ouverture. Il ne sert pas seulement à masquer l'écran : il dérive une clé (PBKDF2, 310 000 itérations) qui déchiffre [`docs/config.js`](docs/config.js), lequel contient l'identifiant du Sheet chiffré en AES-GCM. Sans le mot de passe, l'app ne connaît pas l'adresse des données. Le mot de passe n'est stocké nulle part dans le dépôt.
+
+- Changer le mot de passe, ou pointer vers un autre Sheet :
+
+  ```
+  node scripts/make-config.mjs "nouveau mot de passe" [sheetId] [nomOnglet]
+  ```
+
+  puis incrémenter la version du cache dans [`docs/sw.js`](docs/sw.js), committer et fusionner. Les appareils déjà connectés devront ressaisir le mot de passe.
+- « Se souvenir sur cet appareil » garde la clé dérivée dans le navigateur. « Se déconnecter » l'efface.
+
+Limites à connaître : la page est publique, donc quelqu'un peut télécharger `config.js` et tenter des mots de passe hors ligne. Choisir une phrase longue. Et le Sheet reste lisible par quiconque connaît son URL, le mot de passe protège l'app, pas la feuille.
 
 ## Installer sur le téléphone
 

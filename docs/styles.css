@@ -88,3 +88,10 @@ label.secondary { display: block; text-align: center; padding: 12px; margin-top:
 .months li { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid rgba(128,128,128,.2); }
 .months li.missing { color: var(--muted); }
 .months li.paid span:last-child { font-weight: 600; }
+
+/* Connexion */
+.login { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+.login input[type="password"] { padding: 12px; font-size: 1rem; border: 1px solid var(--muted);
+  border-radius: 10px; background: var(--card); color: var(--fg); }
+.login .check { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .95rem; }
+.login-error { margin: 0; color: var(--danger); font-weight: 600; min-height: 1.4em; }
