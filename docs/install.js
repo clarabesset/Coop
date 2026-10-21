@@ -3,6 +3,10 @@
 // iOS Safari : aucune API d'installation, on guide le geste Partager → Sur l'écran d'accueil.
 // Android Chrome : on capture beforeinstallprompt et on propose un bouton Installer.
 const DISMISS_KEY = 'coop.install.dismissed';
+// Pictogramme Partager d'iOS : carré ouvert surmonté d'une flèche.
+const SHARE_ICON = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg>`;
 const banner = document.getElementById('install');
 if (!banner) return;
 
@@ -27,8 +31,12 @@ if (standalone || dismissed) return;
 
 if (isIOS) {
   if (isSafariIOS) {
-    show(`<strong>Ajouter à l'écran d'accueil</strong><br>
-      Appuyez sur <span class="ios-share" aria-label="Partager">⎙</span> en bas de Safari, puis « Sur l'écran d'accueil ».`);
+    show(`<strong>Ajouter à l'écran d'accueil</strong>
+      <ol class="install-steps">
+        <li>Appuyez sur <span class="ios-key" aria-label="Plus">•••</span> en bas de Safari</li>
+        <li>Puis sur <span class="ios-key" aria-label="Partager">${SHARE_ICON}</span> Partager</li>
+        <li>Puis sur « Sur l'écran d'accueil »</li>
+      </ol>`);
   } else {
     show(`<strong>Ajouter à l'écran d'accueil</strong><br>
       Ouvrez cette page dans Safari, puis Partager → « Sur l'écran d'accueil ».`);

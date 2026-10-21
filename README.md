@@ -213,7 +213,7 @@ Limites à connaître : la page est publique, donc quelqu'un peut télécharger 
 
 L'app affiche une bannière d'aide tant qu'elle n'est pas installée ([`docs/install.js`](docs/install.js)), fermable d'une croix.
 
-- **iPhone (Safari)** : Safari n'a pas d'API d'installation. La bannière indique le geste : bouton Partager → « Sur l'écran d'accueil ». Depuis un autre navigateur iOS, elle invite à ouvrir la page dans Safari.
+- **iPhone (Safari)** : Safari n'a pas d'API d'installation. La bannière indique les gestes : bouton « ••• » en bas de Safari → Partager → « Sur l'écran d'accueil ». Depuis un autre navigateur iOS, elle invite à ouvrir la page dans Safari.
 - **Android (Chrome, Edge)** : la bannière propose un bouton « Installer » qui déclenche l'invite native, grâce à `beforeinstallprompt`.
 - Une fois installée (mode plein écran), la bannière n'apparaît plus.
 
