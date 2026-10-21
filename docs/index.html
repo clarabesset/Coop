@@ -27,8 +27,11 @@
         <div class="frame"></div>
       </div>
       <p id="status" class="muted">Préparation…</p>
+      <button id="start" class="primary" hidden>Démarrer la caméra</button>
+      <label class="secondary" for="photo">Ou prendre une photo du QR code</label>
+      <input type="file" id="photo" accept="image/*" capture="environment" hidden>
       <form id="manual-form" class="manual" hidden>
-        <label for="manual-id">Caméra indisponible : collez l'id ou l'URL de la carte</label>
+        <label for="manual-id">Collez l'id ou l'URL de la carte</label>
         <input id="manual-id" autocomplete="off" placeholder="…?id=xxxxxxxx-xxxx-…">
         <button type="submit">Chercher</button>
       </form>
