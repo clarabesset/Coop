@@ -118,3 +118,7 @@ label.secondary { display: block; text-align: center; padding: 12px; margin-top:
 header.brand { display: flex; align-items: center; gap: 14px; }
 header.brand .logo { width: 72px; height: 72px; border-radius: 50%; flex-shrink: 0; }
 header.brand h1 { line-height: 1.15; }
+
+/* Lien retour en haut de la page des cartes */
+.back { display: block; margin: 4px 0 16px; padding: 12px; text-align: center; border-radius: 12px;
+  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; }
