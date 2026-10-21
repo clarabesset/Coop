@@ -27,13 +27,13 @@
   <header class="brand">
     <a class="logo-link" href="./" aria-label="Retour au scanner"><img class="logo" src="./icons/logo.jpg" alt="Coopérative de Ménilmontant" width="96" height="96"></a>
     <div>
-    <h1>Coop Sociétaires</h1>
+    <h1>Sociétaires de la Coop</h1>
     <p id="source" class="source">Chargement…</p>
     </div>
   </header>
   <a class="back" href="./">← Retour au scanner</a>
   <main>
-    <p class="muted">Scannez le QR de la carte de membre du sociétaire avec l'app pour accéder à ses contributions.</p>
+    <p class="muted">Scannez le QR de la carte du sociétaire avec l'app pour accéder à ses contributions.</p>
     <div id="login"></div>
     <div id="cards" class="cards"></div>
   </main>
@@ -51,7 +51,7 @@
         src.textContent = 'Chargement…';
         const tx = await loadTransactions();
         const members = membersFrom(tx.transactions);
-        src.textContent = tx.ok ? `${members.length} contributeurs depuis l'onglet Transactions` : 'Onglet Transactions injoignable : ' + tx.error;
+        src.textContent = tx.ok ? `${members.length} sociétaires` : 'Onglet Transactions injoignable : ' + tx.error;
         src.className = 'source ' + (tx.ok ? 'sheet' : 'demo');
         const base = location.origin + location.pathname.replace(/cartes(\.html)?$/, '');
         document.getElementById('cards').innerHTML = members.map(m => {

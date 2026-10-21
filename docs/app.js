@@ -161,7 +161,7 @@ async function start(config) {
   $('#sheet-link').href = sheetUrl();
   $('#logout').hidden = false;
   showScreen('scan');
-  $('#source').textContent = 'Chargement des transactions…';
+  $('#source').textContent = 'Chargement des contributions';
   const tx = await loadTransactions();
   transactions = tx.transactions;
   transactionsOk = tx.ok;
@@ -171,7 +171,7 @@ async function start(config) {
     src.textContent = 'Onglet Transactions injoignable : ' + tx.error;
     src.className = 'source demo';
   } else {
-    src.textContent = `${members.length} contributeurs · ${transactions.length} transactions`;
+    src.textContent = `${members.length} sociétaires`;
     src.className = 'source sheet';
   }
 
