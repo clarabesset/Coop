@@ -67,3 +67,8 @@ button.primary { width: 100%; margin-top: 16px; }
   header, footer { display: none; }
   .card { page-break-inside: avoid; border: 1px solid #ccc; }
 }
+
+/* Bouton secondaire (repli photo) */
+label.secondary { display: block; text-align: center; padding: 12px; margin-top: 10px;
+  border: 1px solid var(--accent); border-radius: 12px; color: var(--accent); cursor: pointer; }
+.manual { margin-top: 12px; }
