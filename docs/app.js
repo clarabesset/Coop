@@ -1,5 +1,6 @@
 (() => {
-const { loadTransactions, membersFrom, summarizeContributions, extractId, SHEET_ID, TRANSACTIONS_SHEET } = window.CoopData;
+const { configure, sheetUrl, loadTransactions, membersFrom, summarizeContributions, extractId } = window.CoopData;
+const Auth = window.CoopAuth;
 
 const $ = (sel) => document.querySelector(sel);
 const video = $('#video');
@@ -151,7 +152,13 @@ function showIdle() {
   setStatus('Appuyez sur le bouton pour scanner une carte.');
 }
 
-async function init() {
+// Après déverrouillage : charge les transactions puis ouvre le scanner ou la fiche demandée.
+async function start(config) {
+  configure(config);
+  $('#sheet-link').href = sheetUrl();
+  $('#logout').hidden = false;
+  showScreen('scan');
+  $('#source').textContent = 'Chargement des transactions…';
   const tx = await loadTransactions();
   transactions = tx.transactions;
   transactionsOk = tx.ok;
@@ -170,6 +177,19 @@ async function init() {
   showIdle();
 }
 
+async function init() {
+  const config = await Auth.unlockStored();
+  if (config) { start(config); return; }
+  $('#source').textContent = 'Connexion requise';
+  showScreen('login');
+  Auth.requireLogin($('#login'), start);
+}
+
+$('#logout').addEventListener('click', (e) => {
+  e.preventDefault();
+  Auth.forget();
+  location.href = location.pathname;
+});
 $('#start').addEventListener('click', startScanner);
 $('#photo').addEventListener('change', (e) => { scanPhoto(e.target.files[0]); e.target.value = ''; });
 $('#again').addEventListener('click', () => {
@@ -184,7 +204,6 @@ $('#manual-form').addEventListener('submit', (e) => {
 });
 window.addEventListener('pagehide', stopScanner);
 document.addEventListener('visibilitychange', () => { if (document.hidden && scanning) { stopScanner(); showIdle(); } });
-$('#sheet-link').href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`;
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});

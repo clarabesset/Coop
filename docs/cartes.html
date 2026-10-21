@@ -15,31 +15,41 @@
   </header>
   <main>
     <p class="muted">Affichez cette page sur un écran et scannez un QR code avec l'app. Chaque QR encode l'URL de l'app avec le pseudo Open Collective du contributeur.</p>
+    <div id="login"></div>
     <div id="cards" class="cards"></div>
   </main>
   <footer><a href="./">Retour au scanner</a></footer>
 
+  <script src="./config.js"></script>
+  <script src="./auth.js"></script>
   <script src="./data.js"></script>
   <script>
     (async () => {
-      const { loadTransactions, membersFrom } = window.CoopData;
-      const tx = await loadTransactions();
-      const members = membersFrom(tx.transactions);
+      const { configure, loadTransactions, membersFrom } = window.CoopData;
       const src = document.getElementById('source');
-      src.textContent = tx.ok ? `${members.length} contributeurs depuis l'onglet Transactions` : 'Onglet Transactions injoignable : ' + tx.error;
-      src.className = 'source ' + (tx.ok ? 'sheet' : 'demo');
-      const base = location.origin + location.pathname.replace(/cartes\.html$/, '');
       const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-      document.getElementById('cards').innerHTML = members.map(m => {
-        const url = `${base}?id=${encodeURIComponent(m.id)}`;
-        const qr = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(url)}`;
-        return `<div class="card adherent">
-          <img src="${qr}" alt="QR ${esc(m.name)}" loading="lazy">
-          <h3>${esc(m.name)}</h3>
-          <div>${esc(m.tier)}</div>
-          <small>${esc(m.id)}</small>
-        </div>`;
-      }).join('');
+      async function render(config) {
+        configure(config);
+        src.textContent = 'Chargement…';
+        const tx = await loadTransactions();
+        const members = membersFrom(tx.transactions);
+        src.textContent = tx.ok ? `${members.length} contributeurs depuis l'onglet Transactions` : 'Onglet Transactions injoignable : ' + tx.error;
+        src.className = 'source ' + (tx.ok ? 'sheet' : 'demo');
+        const base = location.origin + location.pathname.replace(/cartes\.html$/, '');
+        document.getElementById('cards').innerHTML = members.map(m => {
+          const url = `${base}?id=${encodeURIComponent(m.id)}`;
+          const qr = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(url)}`;
+          return `<div class="card adherent">
+            <img src="${qr}" alt="QR ${esc(m.name)}" loading="lazy">
+            <h3>${esc(m.name)}</h3>
+            <div>${esc(m.tier)}</div>
+            <small>${esc(m.id)}</small>
+          </div>`;
+        }).join('');
+      }
+      const config = await window.CoopAuth.unlockStored();
+      if (config) render(config);
+      else { src.textContent = 'Connexion requise'; window.CoopAuth.requireLogin(document.getElementById('login'), render); }
     })();
   </script>
 </body>
