@@ -54,7 +54,7 @@ function renderMember(id) {
     card.innerHTML = `
       <p class="label">${escapeHtml(m.id)}</p>
       <h2>${escapeHtml(m.name)}</h2>
-      <p class="since">Sociétaire depuis le ${fmtDate(s.last.date)}</p>
+      <p class="since">Sociétaire depuis le ${fmtDate(s.first.date)}</p>
       ${m.tier ? `<p class="badge">${escapeHtml(m.tier)}</p>` : ''}
       ${renderContributions(s)}`;
   }

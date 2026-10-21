@@ -1,15 +1,13 @@
 :root {
-  --bg: #f4f6f3;
-  --fg: #16201b;
-  --muted: #5f6f66;
-  --card: #ffffff;
-  --accent: #1f6f4a;
-  --adherent: #2b6cb0;
-  --societaire: #b7791f;
-  --danger: #c53030;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #0f1512; --fg: #eef2ef; --muted: #9aa8a0; --card: #1a2420; --accent: #3fa36f; }
+  /* Thème sombre permanent, accordé au logo noir / rouge / blanc */
+  --bg: #000000;
+  --fg: #f3f3f3;
+  --muted: #a0a0a0;
+  --card: #161616;
+  --accent: #3fa36f;
+  --adherent: #4a90e2;
+  --societaire: #d4a017;
+  --danger: #e03c3c;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -65,7 +63,7 @@ button.primary { width: 100%; margin-top: 16px; }
   border-top: 6px solid var(--muted); }
 .card.adherent { border-color: var(--adherent); }
 .card.societaire { border-color: var(--societaire); }
-.card img { width: 160px; height: 160px; background: #fff; border-radius: 8px; }
+.card img { width: 160px; height: 160px; background: #fff; border-radius: 8px; padding: 4px; box-sizing: border-box; }
 .card h3 { margin: 8px 0 2px; }
 .card small { color: var(--muted); word-break: break-all; }
 @media print {
@@ -85,7 +83,7 @@ label.secondary { display: block; text-align: center; padding: 12px; margin-top:
 .contrib.none { color: var(--muted); font-weight: 400; }
 .small { font-size: .85rem; margin: 0 0 8px; }
 .months { list-style: none; margin: 0; padding: 0; }
-.months li { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid rgba(128,128,128,.2); }
+.months li { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid rgba(255,255,255,.12); }
 .months li.missing { color: var(--muted); }
 .months li.paid span:last-child { font-weight: 600; }
 
@@ -99,7 +97,7 @@ label.secondary { display: block; text-align: center; padding: 12px; margin-top:
 /* Fiche : depuis + chiffres clés */
 .member .since { margin: 0 0 10px; font-weight: 600; }
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 0; }
-.stats div { background: rgba(128,128,128,.08); border-radius: 10px; padding: 10px 12px; }
+.stats div { background: rgba(255,255,255,.06); border-radius: 10px; padding: 10px 12px; }
 .stats dt { margin: 0; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .stats dd { margin: 4px 0 0; font-size: 1.15rem; font-weight: 700; }
 .stats dd .muted { font-size: .85rem; font-weight: 400; }
@@ -112,3 +110,8 @@ label.secondary { display: block; text-align: center; padding: 12px; margin-top:
 .install-close { background: none; color: var(--muted); padding: 0 4px; font-size: 1.1rem; line-height: 1; }
 .ios-share { display: inline-block; padding: 0 6px; border: 1px solid var(--muted); border-radius: 6px; font-size: 1rem; }
 .install-btn { display: block; margin-top: 8px; padding: 10px 14px; }
+
+/* En-tête avec logo */
+header.brand { display: flex; align-items: center; gap: 14px; }
+header.brand .logo { width: 72px; height: 72px; border-radius: 50%; flex-shrink: 0; }
+header.brand h1 { line-height: 1.15; }
