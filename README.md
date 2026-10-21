@@ -168,12 +168,12 @@ Prévisualisation rapide dans le Sheet, sans code :
 
 Première brique, sans Apps Script : une page web statique dans [`docs/`](docs/), servie par GitHub Pages, installable sur un téléphone comme une app.
 
-- **URL** : https://coopdemenil.github.io/Coop/
+- **URL** : https://coopdemenil.github.io/scan/
 - **Source unique** : l'onglet **Transactions** du Google Sheet, qui contient l'export CSV des transactions Open Collective. Aucun autre onglet n'est lu.
-- **Identifiant d'une carte** : le pseudo Open Collective du contributeur, colonne « Opposite Account Handle » (ex. `max73`). C'est ce que le QR code encode, sous la forme `https://coopdemenil.github.io/Coop/?id=max73`.
+- **Identifiant d'une carte** : le pseudo Open Collective du contributeur, colonne « Opposite Account Handle » (ex. `max73`). C'est ce que le QR code encode, sous la forme `https://coopdemenil.github.io/scan/?id=max73`.
 - **Ce qu'affiche l'app après un scan** : le nom du contributeur, son palier (texte entre parenthèses de la description, ex. « Cotisation mensuelle »), « À jour ce mois-ci » ou « Pas de contribution ce mois-ci », la date et le montant de la dernière contribution, et le montant net des 6 derniers mois.
 - **Route `?id=<pseudo>`** : affiche directement la fiche, pour un QR scanné avec l'app caméra native du téléphone.
-- **Cartes de test** : https://coopdemenil.github.io/Coop/cartes.html génère un QR par contributeur pour tester le scan depuis un écran.
+- **Cartes de test** : https://coopdemenil.github.io/scan/cartes.html génère un QR par contributeur pour tester le scan depuis un écran.
 
 ## Règles de calcul
 
@@ -213,7 +213,7 @@ Limites à connaître : la page est publique, donc quelqu'un peut télécharger 
 
 L'app affiche une bannière d'aide tant qu'elle n'est pas installée ([`docs/install.js`](docs/install.js)), fermable d'une croix.
 
-- **iPhone (Safari)** : Safari n'a pas d'API d'installation. La bannière indique le geste : bouton Partager → « Sur l'écran d'accueil ». Depuis un autre navigateur iOS, elle invite à ouvrir la page dans Safari.
+- **iPhone (Safari)** : Safari n'a pas d'API d'installation. La bannière indique les gestes : bouton « ••• » en bas de Safari → Partager → « Sur l'écran d'accueil ». Depuis un autre navigateur iOS, elle invite à ouvrir la page dans Safari.
 - **Android (Chrome, Edge)** : la bannière propose un bouton « Installer » qui déclenche l'invite native, grâce à `beforeinstallprompt`.
 - Une fois installée (mode plein écran), la bannière n'apparaît plus.
 
