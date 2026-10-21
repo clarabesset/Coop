@@ -1,5 +1,5 @@
 (() => {
-const { loadMembers, extractId, SHEET_ID, SHEET_GID } = window.CoopData;
+const { loadTransactions, membersFrom, summarizeContributions, extractId, SHEET_ID, TRANSACTIONS_SHEET } = window.CoopData;
 
 const $ = (sel) => document.querySelector(sel);
 const video = $('#video');
@@ -7,6 +7,8 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
 let members = [];
+let transactions = [];
+let transactionsOk = false;
 let stream = null;
 let scanning = false;
 
@@ -21,20 +23,36 @@ function escapeHtml(s) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+const fmtEuro = (n) => `${Number.isInteger(n) ? n : n.toFixed(2).replace('.', ',')} €`;
+const fmtDate = (d) => d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+
+function renderContributions(m) {
+  const s = summarizeContributions(transactions, m.id);
+  const rows = s.recent.map(r => `
+      <li class="${r.amount > 0 ? 'paid' : 'missing'}">
+        <span>${escapeHtml(r.label)}</span><span>${r.amount > 0 ? fmtEuro(r.amount) : '—'}</span>
+      </li>`).join('');
+  return `
+    <p class="contrib ${s.upToDate ? 'ok' : 'ko'}">${s.upToDate ? 'À jour ce mois-ci' : 'Pas de contribution ce mois-ci'}</p>
+    <p class="muted small">Dernière contribution : ${fmtDate(s.last.date)} · ${fmtEuro(s.last.amount)}</p>
+    <ul class="months">${rows}</ul>`;
+}
+
 function renderMember(id) {
   stopScanner();
   const m = members.find(x => x.id === id);
   const card = $('#member');
   if (!m) {
     card.className = 'member unknown';
-    card.innerHTML = `<h2>Carte inconnue</h2><p class="muted">Aucun membre avec cet id.</p>`;
+    card.innerHTML = `<h2>Carte inconnue</h2><p class="muted">Aucun contributeur avec le pseudo « ${escapeHtml(id)} ».</p>`;
   } else {
-    const statut = (m.statut || '').toLowerCase();
-    card.className = `member ${statut.startsWith('soci') ? 'societaire' : 'adherent'}`;
+    const s = summarizeContributions(transactions, m.id);
+    card.className = `member ${s.upToDate ? 'uptodate' : 'late'}`;
     card.innerHTML = `
-      <p class="label">Membre</p>
-      <h2>${escapeHtml(m.prenom)} ${escapeHtml(m.nom)}</h2>
-      <p class="badge">${escapeHtml(m.statut || 'statut inconnu')}</p>`;
+      <p class="label">Contributeur · ${escapeHtml(m.id)}</p>
+      <h2>${escapeHtml(m.name)}</h2>
+      ${m.tier ? `<p class="badge">${escapeHtml(m.tier)}</p>` : ''}
+      ${renderContributions(m)}`;
   }
   showScreen('result');
 }
@@ -134,14 +152,16 @@ function showIdle() {
 }
 
 async function init() {
-  const { members: list, source } = await loadMembers();
-  members = list;
+  const tx = await loadTransactions();
+  transactions = tx.transactions;
+  transactionsOk = tx.ok;
+  members = membersFrom(transactions);
   const src = $('#source');
-  if (source === 'demo') {
-    src.textContent = 'Données de démo (Sheet non accessible)';
+  if (!tx.ok) {
+    src.textContent = 'Onglet Transactions injoignable : ' + tx.error;
     src.className = 'source demo';
   } else {
-    src.textContent = `${members.length} membres chargés depuis le Sheet`;
+    src.textContent = `${members.length} contributeurs · ${transactions.length} transactions`;
     src.className = 'source sheet';
   }
 
@@ -164,7 +184,7 @@ $('#manual-form').addEventListener('submit', (e) => {
 });
 window.addEventListener('pagehide', stopScanner);
 document.addEventListener('visibilitychange', () => { if (document.hidden && scanning) { stopScanner(); showIdle(); } });
-$('#sheet-link').href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit?gid=${SHEET_GID}`;
+$('#sheet-link').href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`;
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
