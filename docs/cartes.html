@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cartes QR de test</title>
+  <meta name="theme-color" content="#1f6f4a">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <h1>Cartes QR de test</h1>
+    <p id="source" class="source">Chargement…</p>
+  </header>
+  <main>
+    <p class="muted">Affichez cette page sur un écran et scannez un QR code avec l'app. Chaque QR encode l'URL de l'app avec l'id du membre.</p>
+    <div id="cards" class="cards"></div>
+  </main>
+  <footer><a href="./">Retour au scanner</a></footer>
+
+  <script src="./data.js"></script>
+  <script>
+    (async () => {
+      const { members, source } = await window.CoopData.loadMembers();
+      const src = document.getElementById('source');
+      src.textContent = source === 'demo' ? 'Données de démo (Sheet non accessible)' : `${members.length} membres depuis le Sheet`;
+      src.className = 'source ' + source;
+      const base = location.origin + location.pathname.replace(/cartes\.html$/, '');
+      const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+      document.getElementById('cards').innerHTML = members.map(m => {
+        const url = `${base}?id=${m.id}`;
+        const qr = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(url)}`;
+        const cls = (m.statut || '').toLowerCase().startsWith('soci') ? 'societaire' : 'adherent';
+        return `<div class="card ${cls}">
+          <img src="${qr}" alt="QR ${esc(m.prenom)} ${esc(m.nom)}" loading="lazy">
+          <h3>${esc(m.prenom)} ${esc(m.nom)}</h3>
+          <div>${esc(m.statut)}</div>
+          <small>${esc(m.id)}</small>
+        </div>`;
+      }).join('');
+    })();
+  </script>
+</body>
+</html>

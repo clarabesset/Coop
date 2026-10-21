@@ -161,3 +161,42 @@ Prévisualisation rapide dans le Sheet, sans code :
 ## Prochaine étape
 
 Écrire le script Apps Script complet : `doGet` avec les deux routes, `lookup`, la synchro Open Collective, le gabarit HTML de la page de scan et celui de la fiche membre.
+
+---
+
+# Prototype : app de scan (GitHub Pages)
+
+Première brique, sans Apps Script : une page web statique dans [`docs/`](docs/), servie par GitHub Pages, installable sur un téléphone comme une app.
+
+- **URL** : https://clarabesset.github.io/Coop/
+- **Ce qu'elle fait** : ouvre la caméra, lit un QR code, cherche l'id dans l'onglet Membres du Google Sheet et affiche prénom, nom et statut.
+- **Route `?id=<uuid>`** : affiche directement la fiche, pour un QR scanné avec l'app caméra native du téléphone.
+- **Cartes de test** : https://clarabesset.github.io/Coop/cartes.html génère un QR par membre pour tester le scan depuis un écran.
+- **Repli** : si le Sheet est injoignable, l'app utilise les données de démo de [`data/membres-fake.csv`](data/membres-fake.csv) et l'indique en haut de page.
+
+## Rendre le Sheet lisible par l'app
+
+L'app lit le Sheet via l'export CSV public, sans clé ni serveur. Il faut donc :
+
+1. Ouvrir le Sheet → bouton **Partager** → « Accès général » → **Tous les utilisateurs disposant du lien** → rôle **Lecteur**.
+2. Dans l'onglet 0, coller le contenu de [`data/membres-fake.csv`](data/membres-fake.csv) (Fichier → Importer → Importer, ou copier-coller avec la première ligne d'en-têtes).
+3. L'identifiant du Sheet et le `gid` sont dans [`docs/data.js`](docs/data.js).
+
+Colonnes attendues dans l'onglet : `id, prenom, nom, email, telephone, statut, date_carte, oc_slug`. Seules `id`, `prenom`, `nom` et `statut` sont affichées.
+
+Point RGPD : avec ce mode « lien public », toute personne connaissant l'URL du Sheet peut lire emails et téléphones. Acceptable avec des données factices, pas avec de vrais membres. La version Apps Script décrite plus haut remplace ce partage public par un script qui lit la feuille à la place de l'utilisateur.
+
+## Installer sur le téléphone
+
+- **iPhone (Safari)** : ouvrir l'URL → bouton Partager → « Sur l'écran d'accueil ».
+- **Android (Chrome)** : ouvrir l'URL → menu ⋮ → « Installer l'application » ou « Ajouter à l'écran d'accueil ».
+
+La caméra exige HTTPS, ce que GitHub Pages fournit.
+
+## Développer en local
+
+```
+cd docs && python3 -m http.server 8080
+```
+
+Sur `http://localhost`, la caméra fonctionne sans HTTPS. Pour tester depuis le téléphone, passer par l'URL GitHub Pages de la branche fusionnée.
