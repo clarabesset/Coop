@@ -2,7 +2,7 @@
 // Ne contient pas le mot de passe. Regénérer ce fichier pour changer le mot de passe ou le Sheet.
 window.COOP_CONFIG = {
   "iterations": 310000,
-  "salt": "ld23OpktYMf0tdd/bqHLiA==",
-  "iv": "U4tr2827T79TSIdg",
-  "data": "/sq4TGOld/cMJpbZ5axj1AbBkCIbwhKf8PZltzSsaqbEb4nvDqZgnqsjQOfC1bQBNlQAWbe/XEJtqP46p6mhyWXHi4xD7PAF1+3UIiolh58phLqT/yODMDYfoxTgvOAGjuOtjC7BQg0Lj8c6Tg=="
+  "salt": "zaLdmMeZ31Xm0ox7BCqPDw==",
+  "iv": "pPF4Uufdzb/+IRLh",
+  "data": "/pramB5U+PMjf3/1yRduM/Py5UJPuvPIIDRHZdW869ZFZtvhF7QroK4LOO7+ACE0CPFoYBDfpptPxcPTGiS2cSQ3lZlTE6wdsf9F469HgvbeCgm8/VZLNOqPKP0Ug7hwp6JcIDvSP5mvWJaN/g=="
 };
