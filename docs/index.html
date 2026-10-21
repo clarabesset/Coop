@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Coop Scan</title>
+  <meta name="description" content="Scanner une carte membre et afficher le nom.">
+  <meta name="theme-color" content="#1f6f4a">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Coop Scan">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <h1>Coop Scan</h1>
+    <p id="source" class="source">Chargement…</p>
+  </header>
+
+  <main>
+    <section class="screen" data-screen="scan">
+      <div class="viewfinder">
+        <video id="video" muted playsinline></video>
+        <div class="frame"></div>
+      </div>
+      <p id="status" class="muted">Préparation…</p>
+      <form id="manual-form" class="manual" hidden>
+        <label for="manual-id">Caméra indisponible : collez l'id ou l'URL de la carte</label>
+        <input id="manual-id" autocomplete="off" placeholder="…?id=xxxxxxxx-xxxx-…">
+        <button type="submit">Chercher</button>
+      </form>
+    </section>
+
+    <section class="screen" data-screen="result" hidden>
+      <div id="member" class="member"></div>
+      <button id="again" class="primary">Scanner une autre carte</button>
+    </section>
+  </main>
+
+  <footer>
+    <a href="./cartes.html">Cartes QR de test</a> ·
+    <a id="sheet-link" href="#" target="_blank" rel="noopener">Ouvrir le Sheet</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
