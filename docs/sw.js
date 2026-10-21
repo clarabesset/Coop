@@ -1,6 +1,6 @@
 // Service worker minimal : met en cache la coquille de l'app pour l'installation.
 // Les appels au Google Sheet passent toujours par le réseau.
-const CACHE = 'coop-scan-v8';
+const CACHE = 'coop-scan-v9';
 const SHELL = [
   './', './index.html', './cartes.html', './styles.css', './data.js', './app.js',
   './auth.js', './config.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
