@@ -1,3 +1,4 @@
+(() => {
 // Chargement des membres depuis le Google Sheet, avec repli sur des données de démo.
 // Le Sheet doit être partagé en « Tous les utilisateurs disposant du lien : lecteur ».
 
@@ -83,3 +84,4 @@ function extractId(raw) {
 }
 
 window.CoopData = { loadMembers, extractId, SHEET_ID, SHEET_GID };
+})();

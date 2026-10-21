@@ -12,6 +12,7 @@
   :root { --bg: #0f1512; --fg: #eef2ef; --muted: #9aa8a0; --card: #1a2420; --accent: #3fa36f; }
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; background: var(--bg); color: var(--fg);
   font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 body { min-height: 100dvh; display: flex; flex-direction: column;

@@ -1,3 +1,4 @@
+(() => {
 const { loadMembers, extractId, SHEET_ID, SHEET_GID } = window.CoopData;
 
 const $ = (sel) => document.querySelector(sel);
@@ -170,3 +171,4 @@ if ('serviceWorker' in navigator) {
 }
 
 init();
+})();
