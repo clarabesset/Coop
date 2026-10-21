@@ -122,3 +122,8 @@ header.brand h1 { line-height: 1.15; }
 /* Lien retour en haut de la page des cartes */
 .back { display: block; margin: 4px 0 16px; padding: 12px; text-align: center; border-radius: 12px;
   background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; }
+
+/* Logo cliquable : retour au scanner */
+.logo-link { display: block; flex-shrink: 0; border-radius: 50%; -webkit-tap-highlight-color: transparent; }
+.logo-link:active .logo { transform: scale(.94); }
+.logo { transition: transform .1s; }
