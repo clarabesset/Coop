@@ -1,9 +1,0 @@
-id,prenom,nom,email,telephone,statut,date_carte,oc_slug
-037d34c1-2d96-42a8-8db8-afef734fe509,Camille,Durand,camille.durand@example.org,0601020304,sociétaire,2026-09-01,camille-durand
-a4691e86-0ba8-45c2-adb8-b011dc507003,Inès,Moreau,ines.moreau@example.org,0605060708,adhérent,2026-09-03,
-108bec2d-1780-4920-9396-cb870d6f5240,Théo,Lefèvre,theo.lefevre@example.org,0609101112,adhérent,2026-09-10,theo-lefevre
-ce1d30ac-8d33-47b2-a2d4-59c2e1b3093d,Awa,Diallo,awa.diallo@example.org,0613141516,sociétaire,2026-09-12,
-2d84f332-28e4-46c9-ac50-2d550a71cfc6,Lucas,Bernard,lucas.bernard@example.org,0617181920,adhérent,2026-09-20,
-578c40cc-646d-40ad-b0fa-0cb3a616acf5,Nour,Haddad,nour.haddad@example.org,0621222324,sociétaire,2026-10-02,nour-haddad
-4877aa94-8064-4e9f-ac13-99abeece699c,Maëlle,Petit,maelle.petit@example.org,0625262728,adhérent,2026-10-05,
-012a28dd-3284-43ea-b3b7-47b322ebe225,Yanis,Roux,yanis.roux@example.org,0629303132,sociétaire,2026-10-14,

@@ -52,6 +52,10 @@ button.primary { width: 100%; margin-top: 16px; }
 .member.adherent .badge { background: var(--adherent); }
 .member.societaire { border-color: var(--societaire); }
 .member.societaire .badge { background: var(--societaire); }
+.member.uptodate { border-color: var(--accent); }
+.member.uptodate .badge { background: var(--accent); }
+.member.late { border-color: var(--danger); }
+.member.late .badge { background: var(--muted); }
 .member.unknown { border-color: var(--danger); }
 .member.unknown h2 { color: var(--danger); }
 
@@ -73,3 +77,14 @@ button.primary { width: 100%; margin-top: 16px; }
 label.secondary { display: block; text-align: center; padding: 12px; margin-top: 10px;
   border: 1px solid var(--accent); border-radius: 12px; color: var(--accent); cursor: pointer; }
 .manual { margin-top: 12px; }
+
+/* Contributions */
+.contrib { margin: 16px 0 4px; font-weight: 600; }
+.contrib.ok { color: var(--accent); }
+.contrib.ko { color: var(--danger); }
+.contrib.none { color: var(--muted); font-weight: 400; }
+.small { font-size: .85rem; margin: 0 0 8px; }
+.months { list-style: none; margin: 0; padding: 0; }
+.months li { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid rgba(128,128,128,.2); }
+.months li.missing { color: var(--muted); }
+.months li.paid span:last-child { font-weight: 600; }

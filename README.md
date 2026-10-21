@@ -169,29 +169,37 @@ Prévisualisation rapide dans le Sheet, sans code :
 Première brique, sans Apps Script : une page web statique dans [`docs/`](docs/), servie par GitHub Pages, installable sur un téléphone comme une app.
 
 - **URL** : https://clarabesset.github.io/Coop/
-- **Ce qu'elle fait** : ouvre la caméra, lit un QR code, cherche l'id dans l'onglet Membres du Google Sheet et affiche prénom, nom et statut.
-- **Route `?id=<uuid>`** : affiche directement la fiche, pour un QR scanné avec l'app caméra native du téléphone.
-- **Cartes de test** : https://clarabesset.github.io/Coop/cartes.html génère un QR par membre pour tester le scan depuis un écran.
-- **Repli** : si le Sheet est injoignable, l'app utilise les données de démo de [`data/membres-fake.csv`](data/membres-fake.csv) et l'indique en haut de page.
+- **Source unique** : l'onglet **Transactions** du Google Sheet, qui contient l'export CSV des transactions Open Collective. Aucun autre onglet n'est lu.
+- **Identifiant d'une carte** : le pseudo Open Collective du contributeur, colonne « Opposite Account Handle » (ex. `max73`). C'est ce que le QR code encode, sous la forme `https://clarabesset.github.io/Coop/?id=max73`.
+- **Ce qu'affiche l'app après un scan** : le nom du contributeur, son palier (texte entre parenthèses de la description, ex. « Cotisation mensuelle »), « À jour ce mois-ci » ou « Pas de contribution ce mois-ci », la date et le montant de la dernière contribution, et le montant net des 6 derniers mois.
+- **Route `?id=<pseudo>`** : affiche directement la fiche, pour un QR scanné avec l'app caméra native du téléphone.
+- **Cartes de test** : https://clarabesset.github.io/Coop/cartes.html génère un QR par contributeur pour tester le scan depuis un écran.
+
+## Règles de calcul
+
+- Seules les lignes `Kind = CONTRIBUTION` comptent.
+- Les remboursements (`Credit/Debit = DEBIT`, montant négatif) se soustraient du mois où ils tombent. Un mois est « payé » si son montant net est positif.
+- Si la colonne « Is Reversed » existe et est remplie, la ligne est ignorée.
+- Nom et palier d'un contributeur viennent de sa contribution créditée la plus récente.
 
 ## Rendre le Sheet lisible par l'app
 
-L'app lit le Sheet via l'export CSV public, sans clé ni serveur. Il faut donc :
+L'app lit l'onglet via l'export CSV public, sans clé ni serveur. Il faut donc :
 
-1. Ouvrir le Sheet → bouton **Partager** → « Accès général » → **Tous les utilisateurs disposant du lien** → rôle **Lecteur**.
-2. Dans l'onglet 0, coller le contenu de [`data/membres-fake.csv`](data/membres-fake.csv) (Fichier → Importer → Importer, ou copier-coller avec la première ligne d'en-têtes).
-3. L'identifiant du Sheet et le `gid` sont dans [`docs/data.js`](docs/data.js).
+1. Ouvrir le Sheet → **Partager** → « Accès général » → **Tous les utilisateurs disposant du lien** → rôle **Lecteur**.
+2. Un onglet nommé exactement `Transactions`, avec au minimum les colonnes `Effective Date & Time`, `Amount Single Column`, `Opposite Account Handle`, `Opposite Account Name`, `Credit/Debit`, `Kind`, `Description`. L'export CSV d'Open Collective importé tel quel convient.
+3. L'identifiant du Sheet et le nom de l'onglet sont dans [`docs/data.js`](docs/data.js).
 
-Colonnes attendues dans l'onglet : `id, prenom, nom, email, telephone, statut, date_carte, oc_slug`. Seules `id`, `prenom`, `nom` et `statut` sont affichées.
+Pour mettre à jour les données : réexporter les transactions depuis Open Collective et réimporter le CSV dans l'onglet (Fichier → Importer → Remplacer la feuille active). La synchro automatique par Apps Script décrite plus haut remplacera cette étape manuelle.
 
-Point RGPD : avec ce mode « lien public », toute personne connaissant l'URL du Sheet peut lire emails et téléphones. Acceptable avec des données factices, pas avec de vrais membres. La version Apps Script décrite plus haut remplace ce partage public par un script qui lit la feuille à la place de l'utilisateur.
+Point RGPD : avec le mode « lien public », toute personne connaissant l'URL du Sheet peut lire la liste des contributeurs et leurs montants. Les noms sont les pseudos publics Open Collective, il n'y a ni email ni téléphone. La version Apps Script décrite plus haut remplace ce partage public par un script qui lit la feuille à la place de l'utilisateur.
 
 ## Installer sur le téléphone
 
 - **iPhone (Safari)** : ouvrir l'URL → bouton Partager → « Sur l'écran d'accueil ».
 - **Android (Chrome)** : ouvrir l'URL → menu ⋮ → « Installer l'application » ou « Ajouter à l'écran d'accueil ».
 
-La caméra exige HTTPS, ce que GitHub Pages fournit.
+La caméra exige HTTPS, ce que GitHub Pages fournit. Sur iPhone, la caméra démarre sur un bouton, Safari refusant son ouverture automatique.
 
 ## Développer en local
 

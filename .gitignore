@@ -13,7 +13,6 @@
 
 # Exports de données (contiennent des emails / téléphones)
 *.csv
-!data/membres-fake.csv
 *.xlsx
 
 # Éditeurs

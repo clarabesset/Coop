@@ -1,24 +1,12 @@
 (() => {
-// Chargement des membres depuis le Google Sheet, avec repli sur des données de démo.
+// Source unique : l'onglet « Transactions » du Google Sheet, export CSV d'Open Collective.
 // Le Sheet doit être partagé en « Tous les utilisateurs disposant du lien : lecteur ».
+// L'identifiant d'une carte est le pseudo Open Collective (colonne « Opposite Account Handle »).
 
 const SHEET_ID = '1Bn6md9VQvYQc7cduu1_YDNqoTmEtrKNh2QmfbsPouzE';
-const SHEET_GID = '0';
-const SHEET_CSV_URL =
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&gid=${SHEET_GID}`;
-
-// Copie de data/membres-fake.csv, utilisée si le Sheet est injoignable.
-const FALLBACK_CSV = `
-id,prenom,nom,email,telephone,statut,date_carte,oc_slug
-037d34c1-2d96-42a8-8db8-afef734fe509,Camille,Durand,camille.durand@example.org,0601020304,sociétaire,2026-09-01,camille-durand
-a4691e86-0ba8-45c2-adb8-b011dc507003,Inès,Moreau,ines.moreau@example.org,0605060708,adhérent,2026-09-03,
-108bec2d-1780-4920-9396-cb870d6f5240,Théo,Lefèvre,theo.lefevre@example.org,0609101112,adhérent,2026-09-10,theo-lefevre
-ce1d30ac-8d33-47b2-a2d4-59c2e1b3093d,Awa,Diallo,awa.diallo@example.org,0613141516,sociétaire,2026-09-12,
-2d84f332-28e4-46c9-ac50-2d550a71cfc6,Lucas,Bernard,lucas.bernard@example.org,0617181920,adhérent,2026-09-20,
-578c40cc-646d-40ad-b0fa-0cb3a616acf5,Nour,Haddad,nour.haddad@example.org,0621222324,sociétaire,2026-10-02,nour-haddad
-4877aa94-8064-4e9f-ac13-99abeece699c,Maëlle,Petit,maelle.petit@example.org,0625262728,adhérent,2026-10-05,
-012a28dd-3284-43ea-b3b7-47b322ebe225,Yanis,Roux,yanis.roux@example.org,0629303132,sociétaire,2026-10-14,
-`.trim();
+const TRANSACTIONS_SHEET = 'Transactions';
+const TRANSACTIONS_CSV_URL =
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(TRANSACTIONS_SHEET)}`;
 
 function parseCsv(text) {
   const rows = [];
@@ -40,48 +28,112 @@ function parseCsv(text) {
   return rows;
 }
 
-// Si le CSV a été collé tel quel dans le Sheet, chaque ligne tient dans une seule
-// cellule contenant des virgules : on redécoupe cette cellule.
-function unfoldCollapsedRows(rows) {
-  const nonEmpty = (r) => r.filter(v => v.trim() !== '');
-  const collapsed = rows.length && nonEmpty(rows[0]).length === 1 && nonEmpty(rows[0])[0].includes(',');
-  if (!collapsed) return rows;
-  return rows.map(r => {
-    const cells = nonEmpty(r);
-    return cells.length === 1 ? parseCsv(cells[0])[0] || [] : r;
-  });
+// "2026-10-16 13:53", "16/10/2026 13:53" ou ISO -> Date locale ; null si illisible.
+function parseDate(s) {
+  s = String(s || '').trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0));
+  m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:[ T](\d{2}):(\d{2}))?/);
+  if (m) return new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0));
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
 }
 
-function rowsToMembers(rows) {
-  rows = unfoldCollapsedRows(rows);
+// "20,00", "1 234,50" ou "-30" -> nombre.
+function parseAmount(s) {
+  const n = parseFloat(String(s || '').replace(/[\s ]/g, '').replace(',', '.'));
+  return isNaN(n) ? 0 : n;
+}
+
+// Palier entre parenthèses en fin de description, ex. "(Cotisation mensuelle)".
+function tierOf(description) {
+  const m = String(description || '').match(/\(([^)]+)\)\s*$/);
+  return m ? m[1] : '';
+}
+
+function rowsToTransactions(rows) {
   if (!rows.length) return [];
-  const headers = rows[0].map(h => h.trim().toLowerCase());
-  return rows.slice(1)
-    .filter(r => r.some(v => v.trim() !== ''))
-    .map(r => Object.fromEntries(headers.map((h, i) => [h, (r[i] || '').trim()])))
-    .filter(m => m.id);
+  const h = rows[0].map(x => x.trim().toLowerCase());
+  const col = (name) => h.indexOf(name.toLowerCase());
+  const iDate = col('Effective Date & Time'), iAmt = col('Amount Single Column'),
+        iHandle = col('Opposite Account Handle'), iName = col('Opposite Account Name'),
+        iCD = col('Credit/Debit'), iKind = col('Kind'), iRev = col('Is Reversed'), iDesc = col('Description');
+  if (iDate < 0 || iAmt < 0 || iHandle < 0) return [];
+  return rows.slice(1).map(r => ({
+    date: parseDate(r[iDate]),
+    amount: parseAmount(r[iAmt]),            // négatif pour un remboursement (DEBIT)
+    handle: (r[iHandle] || '').trim().toLowerCase(),
+    name: (r[iName] || '').trim(),
+    credit: iCD < 0 || (r[iCD] || '').trim().toUpperCase() !== 'DEBIT',
+    contribution: iKind < 0 || (r[iKind] || '').trim().toUpperCase() === 'CONTRIBUTION',
+    reversed: iRev >= 0 && (r[iRev] || '').trim() !== '',
+    tier: tierOf(r[iDesc]),
+  })).filter(t => t.date && t.handle);
 }
 
-// Retourne { members, source } où source vaut 'sheet' ou 'demo'.
-async function loadMembers() {
+async function loadTransactions() {
   try {
-    const res = await fetch(SHEET_CSV_URL, { cache: 'no-store' });
+    const res = await fetch(TRANSACTIONS_CSV_URL, { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-    const members = rowsToMembers(parseCsv(text));
-    if (!members.length) throw new Error('Feuille vide ou colonne id absente');
-    return { members, source: 'sheet' };
+    const transactions = rowsToTransactions(parseCsv(await res.text()));
+    if (!transactions.length) throw new Error('Onglet Transactions vide ou colonnes absentes');
+    return { transactions, ok: true, error: null };
   } catch (err) {
-    console.warn('Sheet injoignable, données de démo utilisées :', err.message);
-    return { members: rowsToMembers(parseCsv(FALLBACK_CSV)), source: 'demo' };
+    console.warn('Transactions indisponibles :', err.message);
+    return { transactions: [], ok: false, error: err.message };
   }
 }
 
-// Extrait l'UUID d'un contenu de QR code : URL avec ?id=… ou UUID brut.
-function extractId(raw) {
-  const m = String(raw).trim().match(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
-  return m ? m[1].toLowerCase() : null;
+// Un membre par pseudo : nom et palier pris sur la contribution la plus récente.
+function membersFrom(transactions) {
+  const byHandle = {};
+  for (const t of transactions) {
+    if (!t.contribution || !t.credit) continue;
+    const m = byHandle[t.handle];
+    if (!m || t.date > m.lastDate) {
+      byHandle[t.handle] = { id: t.handle, name: t.name || t.handle, tier: t.tier, lastDate: t.date };
+    }
+  }
+  return Object.values(byHandle).sort((a, b) => a.name.localeCompare(b.name, 'fr'));
 }
 
-window.CoopData = { loadMembers, extractId, SHEET_ID, SHEET_GID };
+const monthKey = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+const MONTH_LABEL = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+const monthLabel = (key) => { const [y, m] = key.split('-'); return `${MONTH_LABEL[+m - 1]} ${y}`; };
+
+// Synthèse d'un pseudo : état du mois courant, montant net des derniers mois, dernière contribution.
+// Les remboursements (DEBIT, montant négatif) se soustraient du mois où ils tombent.
+function summarizeContributions(transactions, handle, months = 6, now = new Date()) {
+  handle = (handle || '').trim().toLowerCase();
+  if (!handle) return null;
+  const mine = transactions.filter(t => t.handle === handle && t.contribution && !t.reversed);
+  const byMonth = {};
+  for (const t of mine) byMonth[monthKey(t.date)] = (byMonth[monthKey(t.date)] || 0) + t.amount;
+  const recent = [];
+  for (let i = 0; i < months; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = monthKey(d);
+    recent.push({ key, label: monthLabel(key), amount: byMonth[key] || 0 });
+  }
+  const credits = mine.filter(t => t.credit).sort((a, b) => b.date - a.date);
+  const last = credits[0] || null;
+  return {
+    handle,
+    count: credits.length,
+    upToDate: (byMonth[monthKey(now)] || 0) > 0,
+    recent,
+    last: last ? { date: last.date, amount: last.amount, tier: last.tier } : null,
+  };
+}
+
+// Extrait l'identifiant d'un contenu de QR code : URL avec ?id=… ou pseudo brut.
+function extractId(raw) {
+  raw = String(raw || '').trim();
+  const m = raw.match(/[?&]id=([^&#\s]+)/i);
+  let id = m ? decodeURIComponent(m[1]) : raw;
+  id = id.trim().toLowerCase();
+  return /^[a-z0-9][a-z0-9._-]{0,80}$/.test(id) ? id : null;
+}
+
+window.CoopData = { loadTransactions, membersFrom, summarizeContributions, extractId, SHEET_ID, TRANSACTIONS_SHEET };
 })();
