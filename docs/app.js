@@ -27,15 +27,17 @@ function escapeHtml(s) {
 const fmtEuro = (n) => `${Number.isInteger(n) ? n : n.toFixed(2).replace('.', ',')} €`;
 const fmtDate = (d) => d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 
-function renderContributions(m) {
-  const s = summarizeContributions(transactions, m.id);
+function renderContributions(s) {
   const rows = s.recent.map(r => `
       <li class="${r.amount > 0 ? 'paid' : 'missing'}">
         <span>${escapeHtml(r.label)}</span><span>${r.amount > 0 ? fmtEuro(r.amount) : '—'}</span>
       </li>`).join('');
   return `
+    <dl class="stats">
+      <div><dt>Dernière contribution</dt><dd>${fmtEuro(s.last.amount)} <span class="muted">· ${fmtDate(s.last.date)}</span></dd></div>
+      <div><dt>Total</dt><dd>${fmtEuro(s.totalAmount)} <span class="muted">· ${s.count} contribution${s.count > 1 ? 's' : ''}</span></dd></div>
+    </dl>
     <p class="contrib ${s.upToDate ? 'ok' : 'ko'}">${s.upToDate ? 'À jour ce mois-ci' : 'Pas de contribution ce mois-ci'}</p>
-    <p class="muted small">Dernière contribution : ${fmtDate(s.last.date)} · ${fmtEuro(s.last.amount)}</p>
     <ul class="months">${rows}</ul>`;
 }
 
@@ -50,10 +52,11 @@ function renderMember(id) {
     const s = summarizeContributions(transactions, m.id);
     card.className = `member ${s.upToDate ? 'uptodate' : 'late'}`;
     card.innerHTML = `
-      <p class="label">Contributeur · ${escapeHtml(m.id)}</p>
+      <p class="label">${escapeHtml(m.id)}</p>
       <h2>${escapeHtml(m.name)}</h2>
+      <p class="since">Sociétaire depuis le ${fmtDate(s.last.date)}</p>
       ${m.tier ? `<p class="badge">${escapeHtml(m.tier)}</p>` : ''}
-      ${renderContributions(m)}`;
+      ${renderContributions(s)}`;
   }
   showScreen('result');
 }

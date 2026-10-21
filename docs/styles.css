@@ -95,3 +95,12 @@ label.secondary { display: block; text-align: center; padding: 12px; margin-top:
   border-radius: 10px; background: var(--card); color: var(--fg); }
 .login .check { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .95rem; }
 .login-error { margin: 0; color: var(--danger); font-weight: 600; min-height: 1.4em; }
+
+/* Fiche : depuis + chiffres clés */
+.member .since { margin: 0 0 10px; font-weight: 600; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 0; }
+.stats div { background: rgba(128,128,128,.08); border-radius: 10px; padding: 10px 12px; }
+.stats dt { margin: 0; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.stats dd { margin: 4px 0 0; font-size: 1.15rem; font-weight: 700; }
+.stats dd .muted { font-size: .85rem; font-weight: 400; }
+.contrib { margin-top: 12px; }
