@@ -158,7 +158,6 @@ function showIdle() {
 // Après déverrouillage : charge les transactions puis ouvre le scanner ou la fiche demandée.
 async function start(config) {
   configure(config);
-  $('#logout').hidden = false;
   showScreen('scan');
   $('#source').textContent = 'Chargement des contributions';
   const tx = await loadTransactions();
@@ -187,11 +186,6 @@ async function init() {
   Auth.requireLogin($('#login'), start);
 }
 
-$('#logout').addEventListener('click', (e) => {
-  e.preventDefault();
-  Auth.forget();
-  location.href = location.pathname;
-});
 $('#start').addEventListener('click', startScanner);
 $('#photo').addEventListener('change', (e) => { scanPhoto(e.target.files[0]); e.target.value = ''; });
 $('#again').addEventListener('click', () => {
