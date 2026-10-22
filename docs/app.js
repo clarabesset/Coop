@@ -87,7 +87,7 @@ async function shareCard() {
   } catch (err) { if (err && err.name === 'AbortError') return; }
   const btn = $('#member .share-icon');
   try { await navigator.clipboard.writeText(url); btn.classList.add('copied'); btn.title = 'Lien copié'; }
-  catch { prompt('Copiez ce lien :', url); return; }
+  catch { prompt('Copie ce lien :', url); return; }
   setTimeout(() => { btn.classList.remove('copied'); btn.title = 'Partager la carte'; }, 1600);
 }
 
@@ -104,10 +104,10 @@ function decode(source, width, height) {
 function explainCameraError(err) {
   const name = err && err.name;
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    return 'Ce navigateur ne donne pas accès à la caméra. Ouvrez le lien dans Safari ou Chrome directement.';
+    return 'Ce navigateur ne donne pas accès à la caméra. Ouvre le lien dans Safari ou Chrome directement.';
   }
   if (!window.isSecureContext) return 'La caméra exige une adresse en https://.';
-  if (name === 'NotAllowedError') return 'Accès caméra refusé. Sur iPhone : Réglages → Safari → Caméra → Autoriser, puis rechargez.';
+  if (name === 'NotAllowedError') return 'Accès caméra refusé. Sur iPhone : Réglages → Safari → Caméra → Autoriser, puis recharge la page.';
   if (name === 'NotFoundError') return 'Aucune caméra trouvée sur cet appareil.';
   if (name === 'NotReadableError') return 'Caméra occupée par une autre application.';
   return `${name || 'Erreur'} : ${err && err.message ? err.message : 'inconnue'}`;
@@ -132,7 +132,7 @@ async function startScanner() {
     return;
   }
   scanning = true;
-  setStatus('Visez un QR code');
+  setStatus('Vise un QR code');
   requestAnimationFrame(tick);
 }
 
@@ -169,7 +169,7 @@ async function scanPhoto(file) {
     const found = decode(bitmap, Math.round(bitmap.width * scale), Math.round(bitmap.height * scale));
     bitmap.close && bitmap.close();
     if (found && found.id) { renderMember(found.id); return; }
-    setStatus(found ? 'QR code lu, mais pas de carte membre dedans' : 'Aucun QR code lisible sur la photo. Réessayez de plus près.');
+    setStatus(found ? 'QR code lu, mais pas de carte membre dedans' : 'Aucun QR code lisible sur la photo. Réessaie de plus près.');
   } catch (err) {
     setStatus('Photo illisible : ' + err.message);
   }
@@ -180,7 +180,7 @@ function showIdle() {
   showScreen('scan');
   $('#start').textContent = 'Démarrer la caméra';
   $('#start').hidden = false;
-  setStatus('Appuyez sur le bouton pour scanner une carte.');
+  setStatus('Appuie sur le bouton pour scanner une carte.');
 }
 
 // Après déverrouillage : charge les transactions puis ouvre le scanner ou la fiche demandée.

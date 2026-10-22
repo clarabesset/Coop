@@ -33,13 +33,13 @@ if (isIOS) {
   if (isSafariIOS) {
     show(`<strong>Ajouter à l'écran d'accueil</strong>
       <ol class="install-steps">
-        <li>Appuyez sur <span class="ios-key" aria-label="Plus">•••</span> en bas de Safari</li>
+        <li>Appuie sur <span class="ios-key" aria-label="Plus">•••</span> en bas de Safari</li>
         <li>Puis sur <span class="ios-key" aria-label="Partager">${SHARE_ICON}</span> Partager</li>
         <li>Puis sur « Sur l'écran d'accueil »</li>
       </ol>`);
   } else {
     show(`<strong>Ajouter à l'écran d'accueil</strong><br>
-      Ouvrez cette page dans Safari, puis Partager → « Sur l'écran d'accueil ».`);
+      Ouvre cette page dans Safari, puis Partager → « Sur l'écran d'accueil ».`);
   }
   return;
 }
