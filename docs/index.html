@@ -16,6 +16,9 @@
     // Marqueur de session : la page des cartes sait qu'on navigue dans l'app.
     try { sessionStorage.setItem('coop.inapp', '1'); } catch (e) {}
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -58,7 +61,6 @@
 
   <footer>
     <a href="./cartes">Cartes membres</a> ·
-    <a id="sheet-link" href="#" target="_blank" rel="noopener">Ouvrir le Sheet</a> ·
     <a id="logout" href="#" hidden>Se déconnecter</a>
   </footer>
 
