@@ -19,7 +19,7 @@ header { padding: 16px 0 8px; }
 h1 { margin: 0; font-size: 1.4rem; }
 main { flex: 1; }
 footer { padding: 16px 0; text-align: center; color: var(--muted); font-size: .9rem; }
-footer a { color: var(--accent); }
+footer a { color: #fff; }
 .muted { color: var(--muted); }
 .source { margin: 4px 0 0; font-size: .85rem; color: var(--muted); }
 .source.demo { color: var(--societaire); }
@@ -150,3 +150,6 @@ button:active, .back:active, label.secondary:active, .install-btn:active { backg
 button:disabled { opacity: .5; }
 .install-close { border: 0; background: none; color: var(--muted); }
 .install-close:active { background: none; color: var(--fg); }
+
+/* Liens en blanc */
+a { color: #fff; }
