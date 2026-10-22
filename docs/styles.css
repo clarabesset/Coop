@@ -202,5 +202,5 @@ footer#home-links a { color: var(--accent); }
 .help .note { color: var(--muted); font-size: .85rem; }
 .help .close { display: block; margin: 12px auto 0; padding: 8px 22px; font-size: .9rem; }
 
-/* Étiquette du palier : seulement le texte plus petit, pastille inchangée */
-.member .badge { font-size: .8rem; }
+/* Étiquette du palier : texte plus petit, casse d'origine (pas de majuscule à chaque mot) */
+.member .badge { font-size: .8rem; text-transform: none; }
