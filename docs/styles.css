@@ -195,10 +195,12 @@ footer#home-links a { color: var(--accent); }
 .help .tabs button, .help .tabs button:active { flex: none; padding: 6px 0 8px; margin: 0 0 -1px; font-size: .95rem;
   font-weight: 600; color: var(--muted); background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0; }
 .help .tabs button[aria-selected="true"] { color: var(--fg); background: none; border-bottom-color: #fff; }
-.help .tabs button:focus { outline: none; }
-.help .tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.help .tabs button:focus, .help .tabs button:focus-visible { outline: none; box-shadow: none; }
 .help ol { margin: 0; padding-left: 20px; }
 .help li { margin: 6px 0; line-height: 1.45; }
 .help .panel[hidden] { display: none; }
 .help .note { color: var(--muted); font-size: .85rem; }
 .help .close { display: block; margin: 12px auto 0; padding: 8px 22px; font-size: .9rem; }
+
+/* Étiquette du palier : texte plus petit, casse d'origine (pas de majuscule à chaque mot) */
+.member .badge { font-size: .8rem; text-transform: none; }

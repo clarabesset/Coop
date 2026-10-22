@@ -53,7 +53,14 @@ function parseAmount(s) {
 // Palier entre parenthèses en fin de description, ex. "(Cotisation mensuelle)".
 function tierOf(description) {
   const m = String(description || '').match(/\(([^)]+)\)\s*$/);
-  return m ? m[1] : '';
+  return m ? shortTier(m[1]) : '';
+}
+
+// Palier long raccourci aux trois premiers éléments :
+// « Précaires, étudiants, RSA, AAH, Aspa, ADA... » → « Précaires, étudiants, RSA… »
+function shortTier(tier) {
+  const parts = tier.replace(/\s*(\.\.\.|…)\s*$/, '').split(',').map(x => x.trim()).filter(Boolean);
+  return parts.length > 3 ? `${parts.slice(0, 3).join(', ')}…` : tier;
 }
 
 function rowsToTransactions(rows) {
