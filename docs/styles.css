@@ -204,4 +204,4 @@ footer#home-links a { color: var(--accent); }
 
 /* Étiquette du palier : discrète, sans majuscule forcée */
 .member .badge { display: inline-block; margin: 0 0 4px; padding: 3px 10px; border-radius: 999px;
-  font-size: .78rem; font-weight: 500; line-height: 1.35; letter-spacing: 0; text-transform: none; }
+  font-size: .78rem; font-weight: 700; line-height: 1.35; letter-spacing: 0; text-transform: none; }
