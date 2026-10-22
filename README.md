@@ -194,6 +194,14 @@ Pour mettre à jour les données : réexporter les transactions depuis Open Coll
 
 Point RGPD : avec le mode « lien public », toute personne connaissant l'URL du Sheet peut lire la liste des contributeurs et leurs montants. Les noms sont les pseudos publics Open Collective, il n'y a ni email ni téléphone. La version Apps Script décrite plus haut remplace ce partage public par un script qui lit la feuille à la place de l'utilisateur.
 
+## Partager une carte de membre
+
+Sur la page des cartes, chaque carte a un bouton **Partager la carte**. Il ouvre la feuille de partage du téléphone (Messages, WhatsApp, email…) ou, à défaut, copie le lien.
+
+Le lien mène à [`docs/membre.html`](docs/membre.html) : une carte autonome avec le nom, « Sociétaire depuis », la fleur et le QR code du sociétaire. Tout est dans l'adresse (`?id=<pseudo>&n=<nom>&d=<date>`) : la page ne demande **pas** de mot de passe et ne lit aucune donnée. Le QR est généré dans la page et la carte reste affichable hors ligne une fois ouverte.
+
+Le sociétaire l'ajoute à son écran d'accueil (bannière d'aide sur iPhone). La page n'a pas de manifeste, pour que l'icône rouvre sa carte et non le scanner. Ce lien ne donne accès à rien d'autre : scanner le QR mène au scanner, qui demande le mot de passe.
+
 ## Mot de passe d'accès
 
 L'app demande un mot de passe à l'ouverture. Il ne sert pas seulement à masquer l'écran : il dérive une clé (PBKDF2, 310 000 itérations) qui déchiffre [`docs/config.js`](docs/config.js), lequel contient l'identifiant du Sheet chiffré en AES-GCM. Sans le mot de passe, l'app ne connaît pas l'adresse des données. Le mot de passe n'est stocké nulle part dans le dépôt.

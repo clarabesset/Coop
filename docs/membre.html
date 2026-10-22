@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Carte de membre</title>
+  <meta name="description" content="Carte de membre de la Coopérative de Ménilmontant.">
+  <meta name="theme-color" content="#000000">
+  <!-- Pas de manifeste : l'icône d'écran d'accueil doit rouvrir CETTE carte, pas le scanner. -->
+  <link rel="icon" href="./icons/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta id="app-title" name="apple-mobile-web-app-title" content="Ma carte Coop">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="member-card-page">
+  <header class="brand">
+    <img class="logo" src="./icons/logo.jpg" alt="Coopérative de Ménilmontant" width="96" height="96">
+    <div>
+      <h1>Carte de membre</h1>
+      <p class="source">Coopérative de Ménilmontant</p>
+    </div>
+  </header>
+
+  <div id="install" class="install" hidden></div>
+
+  <main>
+    <section id="card" class="card big-card" hidden>
+      <img class="flower" src="./icons/flower.png" alt="" width="72" height="72">
+      <h2 id="name"></h2>
+      <p id="since" class="since" hidden></p>
+      <div id="qr" class="qr" role="img" aria-label="QR code de la carte"></div>
+      <small id="handle"></small>
+    </section>
+    <p id="error" class="muted" hidden>Lien de carte incomplet : demandez un nouveau lien à la Coop.</p>
+    <p class="muted small center">Présentez ce QR code au comptoir.</p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script>
+    (() => {
+      // Carte autonome : tout vient de l'URL (?id=pseudo&n=nom&d=AAAA-MM-JJ), aucune donnée chargée.
+      const p = new URLSearchParams(location.search);
+      const id = (p.get('id') || '').trim().toLowerCase();
+      const name = (p.get('n') || '').trim();
+      const since = (p.get('d') || '').trim();
+      if (!/^[a-z0-9][a-z0-9._-]{0,80}$/.test(id)) { document.getElementById('error').hidden = false; return; }
+
+      document.getElementById('name').textContent = name || id;
+      document.getElementById('handle').textContent = id;
+      document.title = `Carte Coop · ${name || id}`;
+      document.getElementById('app-title').setAttribute('content', `Carte ${name || 'Coop'}`.slice(0, 30));
+      const m = since.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m) {
+        const d = new Date(+m[1], +m[2] - 1, +m[3]);
+        const el = document.getElementById('since');
+        el.textContent = `Sociétaire depuis le ${d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+        el.hidden = false;
+      }
+
+      // Le QR contient l'adresse du scanner avec le pseudo, comme les cartes papier.
+      const scanUrl = `${location.origin}${location.pathname.replace(/membre(\.html)?$/, '')}?id=${encodeURIComponent(id)}`;
+      const qr = qrcode(0, 'M');
+      qr.addData(scanUrl);
+      qr.make();
+      document.getElementById('qr').innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+      document.getElementById('card').hidden = false;
+
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+    })();
+  </script>
+  <script src="./install.js"></script>
+</body>
+</html>
