@@ -201,3 +201,7 @@ footer#home-links a { color: var(--accent); }
 .help .panel[hidden] { display: none; }
 .help .note { color: var(--muted); font-size: .85rem; }
 .help .close { display: block; margin: 12px auto 0; padding: 8px 22px; font-size: .9rem; }
+
+/* Étiquette du palier : discrète, sans majuscule forcée */
+.member .badge { display: inline-block; margin: 0 0 4px; padding: 3px 10px; border-radius: 999px;
+  font-size: .78rem; font-weight: 500; line-height: 1.35; letter-spacing: 0; text-transform: none; }
