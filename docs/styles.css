@@ -173,3 +173,7 @@ a { color: #fff; }
 
 /* Fiche : retour aux cartes sous « Scanner une autre carte » */
 .back-cards { margin: 12px 0 0; }
+
+/* Vert de la Coop : cadre du scanner et liens de l'accueil */
+.frame { border-color: var(--accent); }
+footer#home-links a { color: var(--accent); }

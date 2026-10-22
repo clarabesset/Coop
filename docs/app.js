@@ -17,6 +17,8 @@ function setStatus(text) { $('#status').textContent = text; }
 
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.hidden = s.dataset.screen !== name);
+  // Liens du bas : uniquement sur l'accueil du scanner (pas à la connexion ni sur une fiche).
+  $('#home-links').hidden = name !== 'scan';
 }
 
 function escapeHtml(s) {
@@ -186,6 +188,11 @@ async function init() {
   Auth.requireLogin($('#login'), start);
 }
 
+$('#logout').addEventListener('click', (e) => {
+  e.preventDefault();
+  Auth.forget();
+  location.href = location.pathname;
+});
 $('#start').addEventListener('click', startScanner);
 $('#photo').addEventListener('change', (e) => { scanPhoto(e.target.files[0]); e.target.value = ''; });
 $('#again').addEventListener('click', () => {
