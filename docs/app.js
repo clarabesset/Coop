@@ -117,7 +117,6 @@ function explainCameraError(err) {
 async function startScanner() {
   showScreen('scan');
   $('#start').hidden = true;
-  $('#manual-form').hidden = true;
   setStatus('Ouverture de la caméra…');
   try {
     stream = await navigator.mediaDevices.getUserMedia({
@@ -130,7 +129,6 @@ async function startScanner() {
     setStatus('Caméra indisponible. ' + explainCameraError(err));
     $('#start').textContent = 'Réessayer la caméra';
     $('#start').hidden = false;
-    $('#manual-form').hidden = false;
     return;
   }
   scanning = true;
@@ -227,12 +225,6 @@ $('#photo').addEventListener('change', (e) => { scanPhoto(e.target.files[0]); e.
 $('#again').addEventListener('click', () => {
   history.replaceState(null, '', location.pathname);
   startScanner();
-});
-$('#manual-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const id = extractId($('#manual-id').value);
-  if (id) renderMember(id);
-  else setStatus('Id invalide');
 });
 window.addEventListener('pagehide', stopScanner);
 document.addEventListener('visibilitychange', () => { if (document.hidden && scanning) { stopScanner(); showIdle(); } });
