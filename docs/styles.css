@@ -170,3 +170,6 @@ a { color: #fff; }
 
 /* Fiche ouverte (après scan ou toucher d'une carte) : même bordure blanche que les cartes */
 .member, .member.uptodate, .member.late, .member.unknown { border: 3px solid #fff; border-radius: 16px; }
+
+/* Fiche : retour aux cartes sous « Scanner une autre carte » */
+.back-cards { margin: 12px 0 0; }
