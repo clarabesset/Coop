@@ -81,7 +81,7 @@ function memberCardUrl(m, s) {
 async function shareCard() {
   if (!shareTarget) return;
   const { name, url } = shareTarget;
-  const text = "Ta carte de membre de la Coopérative de Ménilmontant. Ouvre le lien puis ajoute-la à ton écran d'accueil.";
+  const text = "Ta carte de membre de la Coopérative de Ménilmontant. Ouvre le lien, puis touche « Ajouter la carte à l'écran d'accueil » sous ta carte pour l'avoir toujours sur toi.";
   try {
     if (navigator.share) { await navigator.share({ title: `Carte de membre · ${name}`, text, url }); return; }
   } catch (err) { if (err && err.name === 'AbortError') return; }
