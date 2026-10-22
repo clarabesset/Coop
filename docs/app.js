@@ -48,7 +48,6 @@ function renderMember(id) {
   const m = members.find(x => x.id === id);
   const card = $('#member');
   shareTarget = null;
-  $('#share').hidden = true;
   if (!m) {
     card.className = 'member unknown';
     card.innerHTML = `<h2>Carte inconnue</h2><p class="muted">Aucun contributeur avec le pseudo « ${escapeHtml(id)} ».</p>`;
@@ -56,13 +55,13 @@ function renderMember(id) {
     const s = summarizeContributions(transactions, m.id);
     card.className = `member ${s.upToDate ? 'uptodate' : 'late'}`;
     card.innerHTML = `
+      <button class="share-icon" type="button" aria-label="Partager la carte" title="Partager la carte"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg></button>
       <p class="label">${escapeHtml(m.id)}</p>
       <h2>${escapeHtml(m.name)}</h2>
       <p class="since">Sociétaire depuis le ${fmtDate(s.first.date)}</p>
       ${m.tier ? `<p class="badge">${escapeHtml(m.tier)}</p>` : ''}
       ${renderContributions(s)}`;
     shareTarget = { name: m.name, url: memberCardUrl(m, s) };
-    $('#share').hidden = false;
   }
   showScreen('result');
 }
@@ -86,10 +85,10 @@ async function shareCard() {
   try {
     if (navigator.share) { await navigator.share({ title: `Carte de membre · ${name}`, text, url }); return; }
   } catch (err) { if (err && err.name === 'AbortError') return; }
-  const label = $('#share span');
-  try { await navigator.clipboard.writeText(url); label.textContent = 'Lien copié'; }
+  const btn = $('#member .share-icon');
+  try { await navigator.clipboard.writeText(url); btn.classList.add('copied'); btn.title = 'Lien copié'; }
   catch { prompt('Copiez ce lien :', url); return; }
-  setTimeout(() => { label.textContent = 'Partager la carte'; }, 1600);
+  setTimeout(() => { btn.classList.remove('copied'); btn.title = 'Partager la carte'; }, 1600);
 }
 
 // Décode une image (frame vidéo ou photo) et renvoie l'id trouvé, sinon null.
@@ -222,7 +221,7 @@ $('#logout').addEventListener('click', (e) => {
   Auth.forget();
   location.href = location.pathname;
 });
-$('#share').addEventListener('click', shareCard);
+$('#member').addEventListener('click', (e) => { if (e.target.closest('.share-icon')) shareCard(); });
 $('#start').addEventListener('click', startScanner);
 $('#photo').addEventListener('change', (e) => { scanPhoto(e.target.files[0]); e.target.value = ''; });
 $('#again').addEventListener('click', () => {

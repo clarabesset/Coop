@@ -173,8 +173,13 @@ a { color: #fff; }
 .frame { border-color: var(--accent); }
 footer#home-links a { color: var(--accent); }
 
-/* Fiche : Partager (icône + texte), puis actions en bas */
-.share-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 16px; }
-.share-btn[hidden] { display: none; }
+/* Fiche : actions en bas */
 .bottom-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
 .bottom-actions .primary, .bottom-actions .back-cards { margin: 0; }
+
+/* Icône Partager posée sur la fiche, en haut à droite */
+.member { position: relative; }
+.share-icon { position: absolute; top: 14px; right: 14px; display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; padding: 0; border-radius: 50%; }
+.share-icon.copied { background: var(--accent); border-color: var(--accent); color: #fff; }
+.member .label { padding-right: 52px; }
