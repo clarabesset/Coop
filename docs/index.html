@@ -46,17 +46,14 @@
       <button id="start" class="primary" hidden>Démarrer la caméra</button>
       <label class="secondary" for="photo">Ou prendre une photo du QR code</label>
       <input type="file" id="photo" accept="image/*" capture="environment" hidden>
-      <form id="manual-form" class="manual" hidden>
-        <label for="manual-id">Collez le pseudo Open Collective ou l'URL de la carte</label>
-        <input id="manual-id" autocomplete="off" placeholder="ex. max73 ou …?id=max73">
-        <button type="submit">Chercher</button>
-      </form>
     </section>
 
     <section class="screen" data-screen="result" hidden>
       <div id="member" class="member"></div>
-      <button id="again" class="primary">Scanner une autre carte</button>
-      <a class="back back-cards" href="./cartes">← Retour aux cartes</a>
+      <div class="bottom-actions">
+        <button id="again" class="primary">Scanner une autre carte</button>
+        <a class="back back-cards" href="./cartes">← Retour aux cartes</a>
+      </div>
     </section>
   </main>
 

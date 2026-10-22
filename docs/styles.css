@@ -32,9 +32,6 @@ footer a { color: #fff; }
   border-radius: 12px; pointer-events: none; }
 #status { text-align: center; margin: 12px 0; }
 
-.manual { display: flex; flex-direction: column; gap: 8px; }
-.manual input { padding: 12px; font-size: 1rem; border: 1px solid var(--muted);
-  border-radius: 10px; background: var(--card); color: var(--fg); }
 button { padding: 14px; font-size: 1rem; border: 0; border-radius: 12px;
   background: var(--accent); color: #fff; cursor: pointer; }
 button.primary { width: 100%; margin-top: 16px; }
@@ -81,7 +78,6 @@ button.primary { width: 100%; margin-top: 16px; }
 /* Bouton secondaire (repli photo) */
 label.secondary { display: block; text-align: center; padding: 12px; margin-top: 10px;
   border: 1px solid var(--accent); border-radius: 12px; color: var(--accent); cursor: pointer; }
-.manual { margin-top: 12px; }
 
 /* Contributions */
 .contrib { margin: 16px 0 4px; font-weight: 600; }
@@ -154,11 +150,6 @@ button:disabled { opacity: .5; }
 /* Liens en blanc */
 a { color: #fff; }
 
-/* Carte + bouton Partager (page des cartes) */
-.card-item { display: flex; flex-direction: column; gap: 8px; }
-.card-item[hidden] { display: none; }
-.card-item .share { width: 100%; padding: 10px; font-size: .95rem; }
-
 /* Page carte de membre (lien partagé) */
 .big-card { max-width: 360px; margin: 8px auto 12px; padding: 24px 20px; }
 .big-card .flower { width: 72px; height: 72px; }
@@ -177,3 +168,14 @@ a { color: #fff; }
 /* Vert de la Coop : cadre du scanner et liens de l'accueil */
 .frame { border-color: var(--accent); }
 footer#home-links a { color: var(--accent); }
+
+/* Fiche : actions en bas */
+.bottom-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+.bottom-actions .primary, .bottom-actions .back-cards { margin: 0; }
+
+/* Icône Partager posée sur la fiche, en haut à droite */
+.member { position: relative; }
+.share-icon { position: absolute; top: 14px; right: 14px; display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; padding: 0; border-radius: 50%; }
+.share-icon.copied { background: var(--accent); border-color: var(--accent); color: #fff; }
+.member .label { padding-right: 52px; }

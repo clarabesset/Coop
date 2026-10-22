@@ -47,6 +47,7 @@ function renderMember(id) {
   stopScanner();
   const m = members.find(x => x.id === id);
   const card = $('#member');
+  shareTarget = null;
   if (!m) {
     card.className = 'member unknown';
     card.innerHTML = `<h2>Carte inconnue</h2><p class="muted">Aucun contributeur avec le pseudo « ${escapeHtml(id)} ».</p>`;
@@ -54,13 +55,40 @@ function renderMember(id) {
     const s = summarizeContributions(transactions, m.id);
     card.className = `member ${s.upToDate ? 'uptodate' : 'late'}`;
     card.innerHTML = `
+      <button class="share-icon" type="button" aria-label="Partager la carte" title="Partager la carte"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg></button>
       <p class="label">${escapeHtml(m.id)}</p>
       <h2>${escapeHtml(m.name)}</h2>
       <p class="since">Sociétaire depuis le ${fmtDate(s.first.date)}</p>
       ${m.tier ? `<p class="badge">${escapeHtml(m.tier)}</p>` : ''}
       ${renderContributions(s)}`;
+    shareTarget = { name: m.name, url: memberCardUrl(m, s) };
   }
   showScreen('result');
+}
+
+// ---- Partage de la carte de membre (page autonome membre.html, sans mot de passe)
+let shareTarget = null;
+
+function memberCardUrl(m, s) {
+  const q = new URLSearchParams({ id: m.id, n: m.name });
+  if (s && s.first) {
+    const d = s.first.date;
+    q.set('d', `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
+  }
+  return `${location.origin}${location.pathname.replace(/(index\.html)?$/, '')}membre?${q}`;
+}
+
+async function shareCard() {
+  if (!shareTarget) return;
+  const { name, url } = shareTarget;
+  const text = "Ta carte de membre de la Coopérative de Ménilmontant. Ouvre le lien puis ajoute-la à ton écran d'accueil.";
+  try {
+    if (navigator.share) { await navigator.share({ title: `Carte de membre · ${name}`, text, url }); return; }
+  } catch (err) { if (err && err.name === 'AbortError') return; }
+  const btn = $('#member .share-icon');
+  try { await navigator.clipboard.writeText(url); btn.classList.add('copied'); btn.title = 'Lien copié'; }
+  catch { prompt('Copiez ce lien :', url); return; }
+  setTimeout(() => { btn.classList.remove('copied'); btn.title = 'Partager la carte'; }, 1600);
 }
 
 // Décode une image (frame vidéo ou photo) et renvoie l'id trouvé, sinon null.
@@ -89,7 +117,6 @@ function explainCameraError(err) {
 async function startScanner() {
   showScreen('scan');
   $('#start').hidden = true;
-  $('#manual-form').hidden = true;
   setStatus('Ouverture de la caméra…');
   try {
     stream = await navigator.mediaDevices.getUserMedia({
@@ -102,7 +129,6 @@ async function startScanner() {
     setStatus('Caméra indisponible. ' + explainCameraError(err));
     $('#start').textContent = 'Réessayer la caméra';
     $('#start').hidden = false;
-    $('#manual-form').hidden = false;
     return;
   }
   scanning = true;
@@ -193,17 +219,12 @@ $('#logout').addEventListener('click', (e) => {
   Auth.forget();
   location.href = location.pathname;
 });
+$('#member').addEventListener('click', (e) => { if (e.target.closest('.share-icon')) shareCard(); });
 $('#start').addEventListener('click', startScanner);
 $('#photo').addEventListener('change', (e) => { scanPhoto(e.target.files[0]); e.target.value = ''; });
 $('#again').addEventListener('click', () => {
   history.replaceState(null, '', location.pathname);
   startScanner();
-});
-$('#manual-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const id = extractId($('#manual-id').value);
-  if (id) renderMember(id);
-  else setStatus('Id invalide');
 });
 window.addEventListener('pagehide', stopScanner);
 document.addEventListener('visibilitychange', () => { if (document.hidden && scanning) { stopScanner(); showIdle(); } });
