@@ -154,11 +154,6 @@ button:disabled { opacity: .5; }
 /* Liens en blanc */
 a { color: #fff; }
 
-/* Carte + bouton Partager (page des cartes) */
-.card-item { display: flex; flex-direction: column; gap: 8px; }
-.card-item[hidden] { display: none; }
-.card-item .share { width: 100%; padding: 10px; font-size: .95rem; }
-
 /* Page carte de membre (lien partagé) */
 .big-card { max-width: 360px; margin: 8px auto 12px; padding: 24px 20px; }
 .big-card .flower { width: 72px; height: 72px; }
@@ -177,3 +172,9 @@ a { color: #fff; }
 /* Vert de la Coop : cadre du scanner et liens de l'accueil */
 .frame { border-color: var(--accent); }
 footer#home-links a { color: var(--accent); }
+
+/* Fiche : Partager (icône + texte), puis actions en bas */
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 16px; }
+.share-btn[hidden] { display: none; }
+.bottom-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+.bottom-actions .primary, .bottom-actions .back-cards { margin: 0; }

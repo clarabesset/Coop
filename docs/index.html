@@ -55,8 +55,16 @@
 
     <section class="screen" data-screen="result" hidden>
       <div id="member" class="member"></div>
-      <button id="again" class="primary">Scanner une autre carte</button>
-      <a class="back back-cards" href="./cartes">← Retour aux cartes</a>
+      <button id="share" class="share-btn" type="button" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg>
+        <span>Partager la carte</span>
+      </button>
+      <div class="bottom-actions">
+        <button id="again" class="primary">Scanner une autre carte</button>
+        <a class="back back-cards" href="./cartes">← Retour aux cartes</a>
+      </div>
     </section>
   </main>
 

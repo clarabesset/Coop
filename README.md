@@ -196,7 +196,7 @@ Point RGPD : avec le mode « lien public », toute personne connaissant l'URL du
 
 ## Partager une carte de membre
 
-Sur la page des cartes, chaque carte a un bouton **Partager la carte**. Il ouvre la feuille de partage du téléphone (Messages, WhatsApp, email…) ou, à défaut, copie le lien.
+Sur la fiche d'un sociétaire (après un scan ou en touchant sa carte), le bouton **Partager la carte** ouvre la feuille de partage du téléphone (Messages, WhatsApp, email…) ou, à défaut, copie le lien.
 
 Le lien mène à [`docs/membre.html`](docs/membre.html) : une carte autonome avec le nom, « Sociétaire depuis », la fleur et le QR code du sociétaire. Tout est dans l'adresse (`?id=<pseudo>&n=<nom>&d=<date>`) : la page ne demande **pas** de mot de passe et ne lit aucune donnée. Le QR est généré dans la page et la carte reste affichable hors ligne une fois ouverte.
 

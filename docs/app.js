@@ -47,6 +47,8 @@ function renderMember(id) {
   stopScanner();
   const m = members.find(x => x.id === id);
   const card = $('#member');
+  shareTarget = null;
+  $('#share').hidden = true;
   if (!m) {
     card.className = 'member unknown';
     card.innerHTML = `<h2>Carte inconnue</h2><p class="muted">Aucun contributeur avec le pseudo « ${escapeHtml(id)} ».</p>`;
@@ -59,8 +61,35 @@ function renderMember(id) {
       <p class="since">Sociétaire depuis le ${fmtDate(s.first.date)}</p>
       ${m.tier ? `<p class="badge">${escapeHtml(m.tier)}</p>` : ''}
       ${renderContributions(s)}`;
+    shareTarget = { name: m.name, url: memberCardUrl(m, s) };
+    $('#share').hidden = false;
   }
   showScreen('result');
+}
+
+// ---- Partage de la carte de membre (page autonome membre.html, sans mot de passe)
+let shareTarget = null;
+
+function memberCardUrl(m, s) {
+  const q = new URLSearchParams({ id: m.id, n: m.name });
+  if (s && s.first) {
+    const d = s.first.date;
+    q.set('d', `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
+  }
+  return `${location.origin}${location.pathname.replace(/(index\.html)?$/, '')}membre?${q}`;
+}
+
+async function shareCard() {
+  if (!shareTarget) return;
+  const { name, url } = shareTarget;
+  const text = "Ta carte de membre de la Coopérative de Ménilmontant. Ouvre le lien puis ajoute-la à ton écran d'accueil.";
+  try {
+    if (navigator.share) { await navigator.share({ title: `Carte de membre · ${name}`, text, url }); return; }
+  } catch (err) { if (err && err.name === 'AbortError') return; }
+  const label = $('#share span');
+  try { await navigator.clipboard.writeText(url); label.textContent = 'Lien copié'; }
+  catch { prompt('Copiez ce lien :', url); return; }
+  setTimeout(() => { label.textContent = 'Partager la carte'; }, 1600);
 }
 
 // Décode une image (frame vidéo ou photo) et renvoie l'id trouvé, sinon null.
@@ -193,6 +222,7 @@ $('#logout').addEventListener('click', (e) => {
   Auth.forget();
   location.href = location.pathname;
 });
+$('#share').addEventListener('click', shareCard);
 $('#start').addEventListener('click', startScanner);
 $('#photo').addEventListener('change', (e) => { scanPhoto(e.target.files[0]); e.target.value = ''; });
 $('#again').addEventListener('click', () => {
