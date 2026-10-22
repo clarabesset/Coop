@@ -142,3 +142,11 @@ h1 { font-size: 1.3rem; }
 .member h2 { font-size: 1.7rem; }
 .card h3 { font-size: 1.05rem; }
 button, .back { font-family: inherit; font-weight: 700; letter-spacing: .03em; }
+
+/* Boutons : fond noir, bordure blanche, texte blanc */
+button, .back, label.secondary, .install-btn {
+  background: #000; color: #fff; border: 2px solid #fff; border-radius: 12px; }
+button:active, .back:active, label.secondary:active, .install-btn:active { background: #fff; color: #000; }
+button:disabled { opacity: .5; }
+.install-close { border: 0; background: none; color: var(--muted); }
+.install-close:active { background: none; color: var(--fg); }
