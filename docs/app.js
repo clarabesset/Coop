@@ -17,6 +17,8 @@ function setStatus(text) { $('#status').textContent = text; }
 
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.hidden = s.dataset.screen !== name);
+  // Liens du bas : uniquement sur l'accueil du scanner (pas à la connexion ni sur une fiche).
+  $('#home-links').hidden = name !== 'scan';
 }
 
 function escapeHtml(s) {
@@ -158,7 +160,6 @@ function showIdle() {
 // Après déverrouillage : charge les transactions puis ouvre le scanner ou la fiche demandée.
 async function start(config) {
   configure(config);
-  $('#logout').hidden = false;
   showScreen('scan');
   $('#source').textContent = 'Chargement des contributions';
   const tx = await loadTransactions();

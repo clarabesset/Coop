@@ -49,7 +49,7 @@
   <script src="./data.js"></script>
   <script>
     (async () => {
-      const { configure, loadTransactions, membersFrom } = window.CoopData;
+      const { configure, loadTransactions, membersFrom, summarizeContributions } = window.CoopData;
       const src = document.getElementById('source');
       const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
       const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
@@ -62,18 +62,47 @@
         src.className = 'source ' + (tx.ok ? 'sheet' : 'demo');
         const base = location.origin + location.pathname.replace(/cartes(\.html)?$/, '');
         const cards = document.getElementById('cards');
+        // Lien de carte partageable : page autonome, sans mot de passe, utilisable hors ligne.
+        const sinceOf = (m) => {
+          const s = summarizeContributions(tx.transactions, m.id);
+          return s && s.first ? s.first.date.toISOString().slice(0, 10) : '';
+        };
+        const shareUrl = (m) => {
+          const q = new URLSearchParams({ id: m.id, n: m.name });
+          const d = sinceOf(m); if (d) q.set('d', d);
+          return `${base}membre?${q}`;
+        };
         cards.innerHTML = members.map(m => {
           const url = `${base}?id=${encodeURIComponent(m.id)}`;
           const qr = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(url)}`;
           const key = norm(`${m.name} ${m.id}`);
-          return `<a class="card" href="./?id=${encodeURIComponent(m.id)}" data-search="${esc(key)}">
-            <img class="flower" src="./icons/flower.png" alt="" width="56" height="56">
-            <h3>${esc(m.name)}</h3>
-            ${m.tier ? `<div class="tier">${esc(m.tier)}</div>` : ''}
-            <img class="qr" src="${qr}" alt="QR ${esc(m.name)}" loading="lazy" width="160" height="160">
-            <small>${esc(m.id)}</small>
-          </a>`;
+          return `<div class="card-item" data-search="${esc(key)}">
+            <a class="card" href="./?id=${encodeURIComponent(m.id)}">
+              <img class="flower" src="./icons/flower.png" alt="" width="56" height="56">
+              <h3>${esc(m.name)}</h3>
+              ${m.tier ? `<div class="tier">${esc(m.tier)}</div>` : ''}
+              <img class="qr" src="${qr}" alt="QR ${esc(m.name)}" loading="lazy" width="160" height="160">
+              <small>${esc(m.id)}</small>
+            </a>
+            <button class="share" type="button" data-url="${esc(shareUrl(m))}" data-name="${esc(m.name)}">Partager la carte</button>
+          </div>`;
         }).join('');
+
+        cards.addEventListener('click', async (e) => {
+          const btn = e.target.closest('button.share');
+          if (!btn) return;
+          const url = btn.dataset.url, name = btn.dataset.name;
+          const text = `Ta carte de membre de la Coopérative de Ménilmontant. Ouvre le lien puis ajoute-la à ton écran d'accueil.`;
+          try {
+            if (navigator.share) { await navigator.share({ title: `Carte de membre · ${name}`, text, url }); return; }
+          } catch (err) { if (err && err.name === 'AbortError') return; }
+          try { await navigator.clipboard.writeText(url); flash(btn, 'Lien copié'); }
+          catch { prompt('Copiez ce lien :', url); }
+        });
+        function flash(btn, msg) {
+          const old = btn.textContent; btn.textContent = msg; btn.disabled = true;
+          setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1600);
+        }
 
         // Recherche : nom ou pseudo, sans tenir compte des accents ni de la casse.
         const search = document.getElementById('search');
