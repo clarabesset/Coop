@@ -12,10 +12,6 @@ function configure({ sheetId, transactionsSheet }) {
 }
 const transactionsCsvUrl = () =>
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(TRANSACTIONS_SHEET)}`;
-// Onglet ouvert par le lien « Ouvrir le Sheet » (gid de l'onglet Transactions).
-// Le gid seul ne permet pas de retrouver le Sheet : il peut rester en clair.
-const TRANSACTIONS_GID = '218910567';
-const sheetUrl = () => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit?gid=${TRANSACTIONS_GID}#gid=${TRANSACTIONS_GID}`;
 
 function parseCsv(text) {
   const rows = [];
@@ -148,5 +144,5 @@ function extractId(raw) {
   return /^[a-z0-9][a-z0-9._-]{0,80}$/.test(id) ? id : null;
 }
 
-window.CoopData = { configure, sheetUrl, loadTransactions, membersFrom, summarizeContributions, extractId };
+window.CoopData = { configure, loadTransactions, membersFrom, summarizeContributions, extractId };
 })();

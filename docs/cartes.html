@@ -21,6 +21,9 @@
       if (standalone && !inApp) location.replace('./');
     })();
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -33,8 +36,11 @@
   </header>
   <a class="back" href="./">← Retour au scanner</a>
   <main>
-    <p class="muted">Scannez le QR de la carte du sociétaire avec l'app pour accéder à ses contributions.</p>
+    <p class="muted">Scannez le QR de la carte du sociétaire avec l'app, ou touchez une carte, pour voir ses contributions.</p>
     <div id="login"></div>
+    <input id="search" class="search" type="search" placeholder="Rechercher un nom ou un pseudo…"
+      autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Rechercher un sociétaire" hidden>
+    <p id="no-result" class="muted" hidden>Aucun sociétaire ne correspond.</p>
     <div id="cards" class="cards"></div>
   </main>
 
@@ -45,6 +51,7 @@
     (async () => {
       const { configure, loadTransactions, membersFrom } = window.CoopData;
       const src = document.getElementById('source');
+      const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
       const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
       async function render(config) {
         configure(config);
@@ -54,16 +61,34 @@
         src.textContent = tx.ok ? `${members.length} sociétaires` : 'Onglet Transactions injoignable : ' + tx.error;
         src.className = 'source ' + (tx.ok ? 'sheet' : 'demo');
         const base = location.origin + location.pathname.replace(/cartes(\.html)?$/, '');
-        document.getElementById('cards').innerHTML = members.map(m => {
+        const cards = document.getElementById('cards');
+        cards.innerHTML = members.map(m => {
           const url = `${base}?id=${encodeURIComponent(m.id)}`;
           const qr = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(url)}`;
-          return `<div class="card adherent">
-            <img src="${qr}" alt="QR ${esc(m.name)}" loading="lazy">
+          const key = norm(`${m.name} ${m.id}`);
+          return `<a class="card" href="./?id=${encodeURIComponent(m.id)}" data-search="${esc(key)}">
+            <img class="flower" src="./icons/flower.png" alt="" width="56" height="56">
             <h3>${esc(m.name)}</h3>
-            <div>${esc(m.tier)}</div>
+            ${m.tier ? `<div class="tier">${esc(m.tier)}</div>` : ''}
+            <img class="qr" src="${qr}" alt="QR ${esc(m.name)}" loading="lazy" width="160" height="160">
             <small>${esc(m.id)}</small>
-          </div>`;
+          </a>`;
         }).join('');
+
+        // Recherche : nom ou pseudo, sans tenir compte des accents ni de la casse.
+        const search = document.getElementById('search');
+        const noResult = document.getElementById('no-result');
+        search.hidden = false;
+        search.addEventListener('input', () => {
+          const q = norm(search.value.trim());
+          let shown = 0;
+          for (const c of cards.children) {
+            const ok = !q || c.dataset.search.includes(q);
+            c.hidden = !ok;
+            if (ok) shown++;
+          }
+          noResult.hidden = shown > 0;
+        });
       }
       const config = await window.CoopAuth.unlockStored();
       if (config) render(config);

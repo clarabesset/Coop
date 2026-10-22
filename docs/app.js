@@ -1,5 +1,5 @@
 (() => {
-const { configure, sheetUrl, loadTransactions, membersFrom, summarizeContributions, extractId } = window.CoopData;
+const { configure, loadTransactions, membersFrom, summarizeContributions, extractId } = window.CoopData;
 const Auth = window.CoopAuth;
 
 const $ = (sel) => document.querySelector(sel);
@@ -158,7 +158,6 @@ function showIdle() {
 // Après déverrouillage : charge les transactions puis ouvre le scanner ou la fiche demandée.
 async function start(config) {
   configure(config);
-  $('#sheet-link').href = sheetUrl();
   $('#logout').hidden = false;
   showScreen('scan');
   $('#source').textContent = 'Chargement des contributions';
