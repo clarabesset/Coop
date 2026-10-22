@@ -27,8 +27,6 @@
     </div>
   </header>
 
-  <div id="install" class="install" hidden></div>
-
   <main>
     <section id="card" class="card big-card" hidden>
       <img class="flower" src="./icons/flower.png" alt="" width="72" height="72">
@@ -39,7 +37,35 @@
     </section>
     <p id="error" class="muted" hidden>Lien de carte incomplet : demande un nouveau lien à la Coop.</p>
     <p class="muted small center">Présente ce QR code au comptoir.</p>
+    <p class="center"><a id="add-home" class="add-home" href="#">Ajouter la carte à l'écran d'accueil</a></p>
   </main>
+
+  <dialog id="help" class="help" aria-labelledby="help-title">
+    <h2 id="help-title">Ajouter ta carte à l'écran d'accueil</h2>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-os="ios">iPhone</button>
+      <button type="button" role="tab" data-os="android">Android</button>
+    </div>
+    <div class="panel" data-os="ios">
+      <p id="ios-not-safari" class="note" hidden>Ouvre d'abord ce lien dans <strong>Safari</strong> : c'est lui qui sait ajouter une page à l'écran d'accueil.</p>
+      <ol>
+        <li>Appuie sur <span class="ios-key" aria-label="Plus">•••</span> en bas de Safari.</li>
+        <li>Appuie sur <span class="ios-key" aria-label="Partager"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg></span> <strong>Partager</strong>.</li>
+        <li>Fais défiler et choisis <strong>«&nbsp;Sur l'écran d'accueil&nbsp;»</strong>.</li>
+        <li>Appuie sur <strong>Ajouter</strong> en haut à droite.</li>
+      </ol>
+    </div>
+    <div class="panel" data-os="android">
+      <ol>
+        <li>Dans <strong>Chrome</strong>, appuie sur <span class="ios-key" aria-label="Menu">⋮</span> en haut à droite.</li>
+        <li>Choisis <strong>«&nbsp;Ajouter à l'écran d'accueil&nbsp;»</strong>.</li>
+        <li>Appuie sur <strong>Ajouter</strong>, puis confirme.</li>
+      </ol>
+      <p class="note">Avec Samsung Internet : menu <span class="ios-key">≡</span> → «&nbsp;Ajouter la page à&nbsp;» → «&nbsp;Écran d'accueil&nbsp;».</p>
+    </div>
+    <p class="note">L'icône rouvre directement ta carte, même sans réseau.</p>
+    <form method="dialog"><button type="submit" class="close">J'ai compris</button></form>
+  </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
   <script>
@@ -72,8 +98,28 @@
       document.getElementById('card').hidden = false;
 
       if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+
+      // Explications d'ajout à l'écran d'accueil, ouvertes sur le bon système.
+      const ua = navigator.userAgent;
+      const isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isAndroid = /Android/.test(ua);
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+      const dialog = document.getElementById('help');
+      const link = document.getElementById('add-home');
+      if (standalone) link.parentElement.hidden = true;   // déjà sur l'écran d'accueil
+      document.getElementById('ios-not-safari').hidden = !(isIOS && /CriOS|FxiOS|EdgiOS/.test(ua));
+      function selectOs(os) {
+        dialog.querySelectorAll('[role="tab"]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.os === os)));
+        dialog.querySelectorAll('.panel').forEach(pn => pn.hidden = pn.dataset.os !== os);
+      }
+      selectOs(isAndroid ? 'android' : 'ios');
+      dialog.querySelectorAll('[role="tab"]').forEach(b => b.addEventListener('click', () => selectOs(b.dataset.os)));
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
+      });
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });   // toucher hors de la fenêtre
     })();
   </script>
-  <script src="./install.js"></script>
 </body>
 </html>
