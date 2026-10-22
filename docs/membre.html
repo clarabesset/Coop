@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Carte de membre</title>
+  <title>Carte</title>
   <meta name="description" content="Carte de membre de la Coopérative de Ménilmontant.">
   <meta name="theme-color" content="#000000">
   <!-- Pas de manifeste : l'icône d'écran d'accueil doit rouvrir CETTE carte, pas le scanner. -->
@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta id="app-title" name="apple-mobile-web-app-title" content="Ma carte Coop">
+  <meta name="apple-mobile-web-app-title" content="Carte">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
       <small id="handle"></small>
     </section>
     <p id="error" class="muted" hidden>Lien de carte incomplet : demande un nouveau lien à la Coop.</p>
-    <p class="muted small center">Présente ce QR code au comptoir.</p>
+    <p class="muted small center">Montre ce QR code à la caisse pour bénéficier de la réduc sociétaire.</p>
     <p class="center"><a id="add-home" class="add-home" href="#">Ajouter la carte à l'écran d'accueil</a></p>
   </main>
 
@@ -63,7 +63,6 @@
       </ol>
       <p class="note">Avec Samsung Internet : menu <span class="ios-key">≡</span> → «&nbsp;Ajouter la page à&nbsp;» → «&nbsp;Écran d'accueil&nbsp;».</p>
     </div>
-    <p class="note">L'icône rouvre directement ta carte, même sans réseau.</p>
     <form method="dialog"><button type="submit" class="close">J'ai compris</button></form>
   </dialog>
 
@@ -79,8 +78,6 @@
 
       document.getElementById('name').textContent = name || id;
       document.getElementById('handle').textContent = id;
-      document.title = `Carte Coop · ${name || id}`;
-      document.getElementById('app-title').setAttribute('content', `Carte ${name || 'Coop'}`.slice(0, 30));
       const m = since.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (m) {
         const d = new Date(+m[1], +m[2] - 1, +m[3]);

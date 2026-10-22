@@ -200,7 +200,7 @@ Sur la fiche d'un sociétaire (après un scan ou en touchant sa carte), le bouto
 
 Le lien mène à [`docs/membre.html`](docs/membre.html) : une carte autonome avec le nom, « Sociétaire depuis », la fleur et le QR code du sociétaire. Tout est dans l'adresse (`?id=<pseudo>&n=<nom>&d=<date>`) : la page ne demande **pas** de mot de passe et ne lit aucune donnée. Le QR est généré dans la page et la carte reste affichable hors ligne une fois ouverte.
 
-Le sociétaire l'ajoute à son écran d'accueil : sous la carte, le lien « Ajouter la carte à l'écran d'accueil » ouvre une fenêtre d'explications, iPhone ou Android selon son téléphone. La page n'a pas de manifeste, pour que l'icône rouvre sa carte et non le scanner. Ce lien ne donne accès à rien d'autre : scanner le QR mène au scanner, qui demande le mot de passe.
+Le sociétaire l'ajoute à son écran d'accueil : sous la carte, le lien « Ajouter la carte à l'écran d'accueil » ouvre une fenêtre d'explications, iPhone ou Android selon son téléphone. La page n'a pas de manifeste, pour que l'icône rouvre sa carte et non le scanner. Sur l'écran d'accueil, la carte s'appelle « Carte » avec le logo de la Coop ; l'app s'appelle « Scanner » avec la fleur seule. Ce lien ne donne accès à rien d'autre : scanner le QR mène au scanner, qui demande le mot de passe.
 
 ## Mot de passe d'accès
 

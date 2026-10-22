@@ -1,9 +1,9 @@
 // Service worker minimal : met en cache la coquille de l'app pour l'installation.
 // Les appels au Google Sheet passent toujours par le réseau.
-const CACHE = 'coop-scan-v38';
+const CACHE = 'coop-scan-v39';
 const SHELL = [
   './', './index.html', './cartes', './cartes.html', './membre', './membre.html', './styles.css', './data.js', './app.js',
-  './auth.js', './config.js', './install.js', './manifest.webmanifest', './icons/logo.jpg', './icons/flower.png', './icons/favicon.png', './icons/apple-touch-icon.png', './icons/icon-192.png', './icons/icon-512.png',
+  './auth.js', './config.js', './install.js', './manifest.webmanifest', './icons/logo.jpg', './icons/flower.png', './icons/favicon.png', './icons/apple-touch-icon.png', './icons/icon-192.png', './icons/icon-512.png', './icons/scanner-180.png', './icons/scanner-192.png', './icons/scanner-favicon.png',
   'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
   'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js',
 ];
